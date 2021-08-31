@@ -10,12 +10,14 @@ import 'package:timer_count_down/timer_count_down.dart';
 import 'package:thumbing/utility/wpm_calculator.dart';
 
 class TypingTestScreen extends StatefulWidget {
+  static const kTypingScreenRoute = 'typing_screen';
+
   @override
   _TypingTestScreenState createState() => _TypingTestScreenState();
 }
 
-class _TypingTestScreenState extends State<TypingTestScreen> with TickerProviderStateMixin {
-
+class _TypingTestScreenState extends State<TypingTestScreen>
+    with TickerProviderStateMixin {
   FocusNode inputFocusNode;
   List<String> listOfUntypedStrings = [];
   List<String> listOfTypedStrings = [];
@@ -59,16 +61,15 @@ class _TypingTestScreenState extends State<TypingTestScreen> with TickerProvider
     });
   }
 
-  _initControllers(){
+  _initControllers() {
     _textEditingController = TextEditingController();
     _animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 1));
-    _countdownController =
-    new CountdownController(autoStart: false);
+    _countdownController = new CountdownController(autoStart: false);
   }
 
-  _setIconButtonColor(){
-    return isButtonDisabled? Colors.grey[500] : Colors.white;
+  _setIconButtonColor() {
+    return isButtonDisabled ? Colors.grey[500] : Colors.white;
   }
 
   _calculateTypingStat(String userTyped, String orgString) {
@@ -82,7 +83,7 @@ class _TypingTestScreenState extends State<TypingTestScreen> with TickerProvider
     }
   }
 
-  _resetList(){
+  _resetList() {
     listOfUntypedStrings.insertAll(0, listOfTypedStrings);
     listOfTypedStrings.clear();
   }
@@ -106,7 +107,7 @@ class _TypingTestScreenState extends State<TypingTestScreen> with TickerProvider
     return AlertDialog(
       backgroundColor: Colors.lightBlueAccent.shade100,
       title: Text(
-        'Your Score',
+        'Score',
         style: GoogleFonts.lato(
           fontWeight: FontWeight.w600,
           color: Colors.white,
@@ -116,46 +117,55 @@ class _TypingTestScreenState extends State<TypingTestScreen> with TickerProvider
       ),
       content: Container(
         child: Row(mainAxisSize: MainAxisSize.min, children: [
-          CircularScoreWidget(score: wpm, appendText: 'WPM',color: Colors.blueAccent,),
-          SizedBox(width: 30,),
-          CircularScoreWidget(score: acc, appendText: 'Acc', color: Colors.deepPurpleAccent,),
+          CircularScoreWidget(
+            score: wpm,
+            appendText: 'WPM',
+            color: Colors.blueAccent,
+          ),
+          SizedBox(
+            width: 30,
+          ),
+          CircularScoreWidget(
+            score: acc,
+            appendText: 'Acc',
+            color: Colors.deepPurpleAccent,
+          ),
         ]),
       ),
       actions: [
         TextButton(
-          child: Text('Re-Take',
-              style: kAlertDialogTextButtonStyle),
+          child: Text('Re-Take', style: kAlertDialogTextButtonStyle),
+          onPressed: null,
         ),
         TextButton(
-          child: Text('Done',
-              style: kAlertDialogTextButtonStyle),
+          child: Text('Done', style: kAlertDialogTextButtonStyle),
+          onPressed: null,
         )
       ],
       elevation: 24.0,
     );
   }
 
-  int _calculateWPM(){
+  int _calculateWPM() {
     WPMCalculator wpmCalculator = WPMCalculator(
       uncorrectedErrors: uncorrectedErrorCount,
       correctlyTypedEntries: correctlyTypedEntries,
       allTypedEntries: allTypedEntriesCount,
-      minutes: seconds/60,
+      minutes: seconds / 60,
     );
 
     return wpmCalculator.getNetWPM().round();
   }
 
-  int _calculateAccuracy(){
+  int _calculateAccuracy() {
     WPMCalculator wpmCalculator = WPMCalculator(
       uncorrectedErrors: uncorrectedErrorCount,
       correctlyTypedEntries: correctlyTypedEntries,
       allTypedEntries: allTypedEntriesCount,
-      minutes: seconds/60,
+      minutes: seconds / 60,
     );
     return wpmCalculator.getAccuracy().round();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -164,10 +174,10 @@ class _TypingTestScreenState extends State<TypingTestScreen> with TickerProvider
       body: Container(
         decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.deepPurple, Colors.blue],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            )),
+          colors: [Colors.deepPurple, Colors.blue],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        )),
         child: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -187,16 +197,17 @@ class _TypingTestScreenState extends State<TypingTestScreen> with TickerProvider
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           )),
-                      onFinished: (){
+                      onFinished: () {
                         FocusScope.of(context).unfocus();
                         showDialog(
                           context: context,
-                          builder: (_) => Theme.of(context).platform == TargetPlatform.iOS
-                              ? _createCupertinoDialog()
-                              : _createAlertDialog(
-                            acc: _calculateAccuracy(),
-                            wpm: _calculateWPM(),
-                          ),
+                          builder: (_) =>
+                              Theme.of(context).platform == TargetPlatform.iOS
+                                  ? _createCupertinoDialog()
+                                  : _createAlertDialog(
+                                      acc: _calculateAccuracy(),
+                                      wpm: _calculateWPM(),
+                                    ),
                           barrierDismissible: false,
                         );
                       },
@@ -206,20 +217,22 @@ class _TypingTestScreenState extends State<TypingTestScreen> with TickerProvider
                     IconButton(
                       icon: isPlay
                           ? Icon(Icons.pause, color: _setIconButtonColor())
-                          : Icon(Icons.play_arrow, color: _setIconButtonColor()),
+                          : Icon(Icons.play_arrow,
+                              color: _setIconButtonColor()),
                       iconSize: 25,
-                      onPressed: isButtonDisabled? null : () {
-                        setState(() {
-                          if (isPlay) {
-                            _countdownController.onPause();
-                          }else{
-                            _countdownController.onResume();
-                          }
+                      onPressed: isButtonDisabled
+                          ? null
+                          : () {
+                              setState(() {
+                                if (isPlay) {
+                                  _countdownController.onPause();
+                                } else {
+                                  _countdownController.onResume();
+                                }
 
-                          isPlay = !isPlay;
-
-                        });
-                      },
+                                isPlay = !isPlay;
+                              });
+                            },
                     ),
                     //Refresh Button
                     IconButton(
@@ -228,17 +241,19 @@ class _TypingTestScreenState extends State<TypingTestScreen> with TickerProvider
                         color: _setIconButtonColor(),
                       ),
                       iconSize: 25,
-                      onPressed: isButtonDisabled? null : () {
-                        setState(() {
-                          _countdownController.restart();
-                          _countdownController.pause();
+                      onPressed: isButtonDisabled
+                          ? null
+                          : () {
+                              setState(() {
+                                _countdownController.restart();
+                                _countdownController.pause();
 
-                          isPlay = false;
-                          isButtonDisabled = true;
+                                isPlay = false;
+                                isButtonDisabled = true;
 
-                          _resetList();
-                        });
-                      },
+                                _resetList();
+                              });
+                            },
                     )
                   ],
                 ),
@@ -313,8 +328,10 @@ class _TypingTestScreenState extends State<TypingTestScreen> with TickerProvider
                           controller: _textEditingController,
                           onSubmitted: (value) {
                             allTypedEntriesCount += value.length;
-                            _calculateTypingStat(value, listOfUntypedStrings[0]);
-                            listOfTypedStrings.add(listOfUntypedStrings.removeAt(0));
+                            _calculateTypingStat(
+                                value, listOfUntypedStrings[0]);
+                            listOfTypedStrings
+                                .add(listOfUntypedStrings.removeAt(0));
                             print(allTypedEntriesCount);
                             _textEditingController.clear();
                           },
@@ -330,6 +347,4 @@ class _TypingTestScreenState extends State<TypingTestScreen> with TickerProvider
       ),
     );
   }
-
-
 }
