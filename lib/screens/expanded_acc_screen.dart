@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:thumbing/model/expanded_screen_arguments.dart';
 import 'package:thumbing/utility/constants.dart';
+import 'package:thumbing/widgets/line_chart_widget.dart';
 import 'package:thumbing/widgets/value_display_card.dart';
 
 class ExpandedAccScreen extends StatelessWidget {
@@ -18,9 +19,10 @@ class ExpandedAccScreen extends StatelessWidget {
         padding: const EdgeInsets.all(12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Flexible(
-              flex: 2,
+              flex: 4,
               child: Hero(
                 tag: 'accExpand',
                 child: ValueDisplayCard(
@@ -30,17 +32,13 @@ class ExpandedAccScreen extends StatelessWidget {
                   titleTxtStyle: kCardTextStyle.copyWith(
                       fontSize: 40, color: Colors.deepPurple),
                   valueTxtStyle: kCardTextStyle.copyWith(
-                    fontSize: 100,
                     color: Colors.deepPurple,
                   ),
                 ),
               ),
             ),
-            SizedBox(
-              height: 20,
-            ),
             Flexible(
-              flex: 3,
+              flex: 1,
               child: Material(
                 elevation: 10.0,
                 shadowColor: Colors.deepPurpleAccent.shade400,
@@ -74,6 +72,10 @@ class ExpandedAccScreen extends StatelessWidget {
                 ),
               ),
             ),
+            Flexible(
+              flex: 4,
+              child: LineChartWidget(kAccuracyChartTile),
+            )
           ],
         ),
       ),

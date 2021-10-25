@@ -14,12 +14,13 @@ class ExpandedWPMScreen extends StatelessWidget {
         child: Scaffold(
       backgroundColor: Colors.deepPurple.shade700,
       body: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Flexible(
-              flex: 2,
+              flex: 5,
               child: Hero(
                 tag: 'wpmExpand',
                 child: ValueDisplayCard(
@@ -30,15 +31,11 @@ class ExpandedWPMScreen extends StatelessWidget {
                     color: Colors.white,
                   ),
                   valueTxtStyle: kCardTextStyle.copyWith(
-                    fontSize: 90,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 20,
             ),
             Flexible(
               flex: 1,
@@ -75,12 +72,9 @@ class ExpandedWPMScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
-              height: 20,
-            ),
             Flexible(
-              flex: 2,
-              child: LineChartWidget(),
+              flex: 5,
+              child: LineChartWidget(kWPMChartTile),
             )
           ],
         ),

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:thumbing/utility/constants.dart';
@@ -10,6 +11,7 @@ class ValueDisplayCard extends StatelessWidget {
   final valueTxtStyle;
   final double paddingHorizontal;
   final double paddingVertical;
+
   ValueDisplayCard({@required this.titleText, @required this.valueText,
     this.bgColor,
     this.titleTxtStyle,
@@ -26,22 +28,34 @@ class ValueDisplayCard extends StatelessWidget {
       color: bgColor == null? Colors.black54 : bgColor,
       borderRadius: BorderRadius.circular(20),
       child: Container(
+        width: double.infinity,
         child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: paddingHorizontal == 0.0 ? 20 : paddingHorizontal,
             vertical: paddingVertical == 0.0 ? 20 : paddingVertical,
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                titleText,
-                textAlign: TextAlign.center,
-                style: titleTxtStyle,
+              Flexible(
+                flex: 1,
+                fit: FlexFit.loose,
+                child: AutoSizeText(
+                  titleText,
+                  textAlign: TextAlign.center,
+                  style: titleTxtStyle,
+                  maxFontSize: 40,
+                ),
               ),
-              Text(
-                valueText,
-                textAlign: TextAlign.center,
-                style: valueTxtStyle,
+              Flexible(
+                flex: 1,
+                fit: FlexFit.loose,
+                child: AutoSizeText(
+                  valueText,
+                  textAlign: TextAlign.center,
+                  style: valueTxtStyle,
+                  minFontSize: 65,
+                ),
               )
             ],
           ),

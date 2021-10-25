@@ -3,7 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:thumbing/model/expanded_screen_arguments.dart';
 import 'package:thumbing/screens/expanded_wpm_screen.dart';
+import 'package:thumbing/screens/profile_page.dart';
+import 'package:thumbing/screens/typing_test_screen.dart';
+import 'package:thumbing/utility/action_button_icon_icons.dart';
 import 'package:thumbing/utility/constants.dart';
+import 'package:thumbing/widgets/expandable_fab.dart';
+import 'package:thumbing/widgets/leaderboard.dart';
+import 'package:thumbing/widgets/single_value_card.dart';
 import 'package:thumbing/widgets/value_display_card.dart';
 import 'package:thumbing/model/leaderboard_item.dart';
 
@@ -56,8 +62,8 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
   final String avgWPMText = 'Avg WPM';
   final String avgAccText = 'Avg Accuracy';
-  String wpmValueText = '60';
-  String accValueText = '98';
+  String wpmValueText = '120';
+  String accValueText = '100';
   String bestWPM = '72';
   String bestAcc = '99';
 
@@ -66,6 +72,20 @@ class _HomeScreenState extends State<HomeScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.deepPurple.shade700,
+        floatingActionButton: ExpandableFab(
+          distance: 112.0,
+          children: <Widget>[
+            ActionButton(
+              onPressed: () => Navigator.pushNamed(context, TypingTestScreen.kTypingScreenRoute),
+              icon: Icon(ActionButtonIcon.leaf, color: Colors.deepPurpleAccent),
+            ),
+            ActionButton(
+              onPressed: null,
+              icon:  Icon(ActionButtonIcon.medal, color: Colors.deepPurpleAccent,),
+            ),
+
+          ],
+        ),
         body: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
@@ -82,9 +102,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  CircleAvatar(
-                    radius: 25,
-                    backgroundImage: AssetImage('assets/images/totoro.jpg'),
+                  GestureDetector(
+                    onTap: () => Navigator.pushNamed(context, ProfilePageScreen.kProfilePageScreen),
+                    child: Hero(
+                      tag: 'profile_hero',
+                      child: CircleAvatar(
+                        radius: 25,
+                        backgroundImage: AssetImage('assets/images/totoro.jpg'),
+                      ),
+                    ),
                   )
                 ],
               ),
@@ -92,64 +118,69 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 15.0,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.pushNamed(
-                          context,
-                          ExpandedWPMScreen.kExpandedWPMScreen,
-                          arguments: ExpandedScreenArguments(
-                              avgWPMText,
-                              Colors.white,
-                              wpmValueText,
-                              Colors.white,
-                              null,
-                              bestWPM,
+                  Flexible(
+                    flex: 1,
+                    child: GestureDetector(
+                      onTap: (){
+                        Navigator.pushNamed(
+                            context,
+                            ExpandedWPMScreen.kExpandedWPMScreen,
+                            arguments: ExpandedScreenArguments(
+                                avgWPMText,
+                                Colors.white,
+                                wpmValueText,
+                                Colors.white,
+                                null,
+                                bestWPM,
+                            ),
+                        );
+                      },
+                      child: Hero(
+                        tag: 'wpmExpand',
+                        child: ValueDisplayCard(
+                          titleText: avgWPMText,
+                          valueText: wpmValueText,
+                          titleTxtStyle: kCardTextStyle.copyWith(
+                            fontSize: 20,
+                            color: Colors.white,
                           ),
-                      );
-                    },
-                    child: Hero(
-                      tag: 'wpmExpand',
-                      child: ValueDisplayCard(
-                        titleText: avgWPMText,
-                        valueText: wpmValueText,
-                        paddingHorizontal: 30,
-                        titleTxtStyle: kCardTextStyle.copyWith(
-                          fontSize: 20,
-                          color: Colors.white,
-                        ),
-                        valueTxtStyle: kCardTextStyle.copyWith(
-                          fontSize: 50,
-                          color: Colors.white,
+                          valueTxtStyle: kCardTextStyle.copyWith(
+                            fontSize: 60,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () => Navigator.pushNamed(
-                        context,
-                        ExpandedAccScreen.kExpandedAccScreen,
-                      arguments: ExpandedScreenArguments(
-                          avgAccText,
-                          Colors.deepPurple,
-                          accValueText,
-                          Colors.deepPurple,
-                          Colors.white,
-                          bestAcc,
-                      )
-                    ),
-                    child: Hero(
-                      tag: 'accExpand',
-                      child: ValueDisplayCard(
-                        titleText: avgAccText,
-                        valueText: accValueText,
-                        bgColor: Colors.white,
-                        titleTxtStyle: kCardTextStyle.copyWith(
-                            fontSize: 20, color: Colors.deepPurple),
-                        valueTxtStyle: kCardTextStyle.copyWith(
-                          fontSize: 50,
-                          color: Colors.deepPurple,
+                  SizedBox(width: 10,),
+                  Flexible(
+                    flex: 1,
+                    child: GestureDetector(
+                      onTap: () => Navigator.pushNamed(
+                          context,
+                          ExpandedAccScreen.kExpandedAccScreen,
+                        arguments: ExpandedScreenArguments(
+                            avgAccText,
+                            Colors.deepPurple,
+                            accValueText,
+                            Colors.deepPurple,
+                            Colors.white,
+                            bestAcc,
+                        )
+                      ),
+                      child: Hero(
+                        tag: 'accExpand',
+                        child: ValueDisplayCard(
+                          titleText: avgAccText,
+                          valueText: accValueText,
+                          bgColor: Colors.white,
+                          titleTxtStyle: kCardTextStyle.copyWith(
+                              fontSize: 20, color: Colors.deepPurple),
+                          valueTxtStyle: kCardTextStyle.copyWith(
+                            fontSize:60,
+                            color: Colors.deepPurple,
+                          ),
                         ),
                       ),
                     ),
@@ -159,89 +190,12 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 height: 15.0,
               ),
-              Material(
-                elevation: 10.0,
-                shadowColor: Colors.deepPurpleAccent.shade400,
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  width: double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Your Current Rank',
-                            textAlign: TextAlign.left,
-                            style: kCardTextStyle.copyWith(
-                              color: Colors.deepPurple,
-                            ),
-                          ),
-                        ),
-                        Text('246',
-                            style: kCardTextStyle.copyWith(
-                              color: Colors.deepPurple,
-                            )),
-                        kRankUpIcon,
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+              SingleValueCard('Your Current Rank', '256'),
               SizedBox(
                 height: 15.0,
               ),
               Expanded(
-                child: Material(
-                  elevation: 10.0,
-                  shadowColor: Colors.deepPurpleAccent.shade400,
-                  color: Colors.black54,
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Leaderboard',
-                            textAlign: TextAlign.left,
-                            style: kCardTextStyle.copyWith(
-                              fontSize: 18,
-                            ),
-                          ),
-                          Expanded(
-                            child: ListView.builder(
-                              itemCount: items.length,
-                              physics: BouncingScrollPhysics(
-                                  parent: AlwaysScrollableScrollPhysics()),
-                              itemBuilder: (_, index) {
-                                return ListTile(
-                                  title: Text(
-                                    items[index].userName,
-                                    style: kCardTextStyle,
-                                  ),
-                                  leading: CircleAvatar(
-                                    backgroundImage: items[index].userImage,
-                                  ),
-                                  trailing: Text(
-                                    items[index].rank,
-                                    style:
-                                        kCardTextStyle.copyWith(fontSize: 15),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                child: Leaderboard(items),
               ),
             ],
           ),

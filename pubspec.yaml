@@ -32,8 +32,11 @@ dependencies:
   scrollable_positioned_list: ^0.1.10
   google_fonts: ^2.1.0
   timer_count_down: ^2.2.0
-  fl_chart: ^0.36.4
-
+  fl_chart: ^0.40.0
+  auto_size_text: ^2.1.0
+  animated_text_kit: ^4.2.1
+  firebase_core: ^1.7.0
+  firebase_auth: ^3.1.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -56,6 +59,7 @@ flutter:
   assets:
     - assets/text/test1.txt
     - assets/images/
+    - assets/fonts/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -69,9 +73,17 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
+    - family: ActionButtonIcon
+      fonts:
+        - asset: assets/fonts/ActionButtonIcon.ttf
     - family: Inconsolata
       fonts:
-        - asset: fonts/Inconsolata-Regular.ttf
+        - asset: assets/fonts/Inconsolata-Regular.ttf
+
+
+
+
+
   # fonts:
   #   - family: Schyler
   #     fonts:

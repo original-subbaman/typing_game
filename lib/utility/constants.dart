@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
+final kWPMChartTile = 'Y - WPM, X - Days';
+final kAccuracyChartTile = 'Y - Accuracy, X - Days';
+
+//Colors
+final kVeryDarkPurple = Color.fromARGB(100, 32, 14, 74);
 
 
 final kAlertDialogTextButtonStyle = GoogleFonts.lato(
@@ -13,7 +18,7 @@ final kAlertDialogTextButtonStyle = GoogleFonts.lato(
 final kCardTextStyle = GoogleFonts.lato(
   color: Colors.white,
   fontWeight: FontWeight.bold,
-  fontSize: 20
+  fontSize: 20,
 );
 
 final kRankUpIcon = Icon(

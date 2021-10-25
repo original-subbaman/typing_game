@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "234988939671",
+    "project_id": "typing-game-2bee6",
+    "storage_bucket": "typing-game-2bee6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:234988939671:android:97226a632bb3c6b934bcd2",
+        "android_client_info": {
+          "package_name": "com.phobbaman.thumbing"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "234988939671-1ar067uiv1348gju7oosk31cuplqn8fu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9Ba3tfPr48-DHuBGpH0CxrC0YqXn6654"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "234988939671-1ar067uiv1348gju7oosk31cuplqn8fu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
