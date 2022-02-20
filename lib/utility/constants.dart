@@ -41,3 +41,13 @@ final kCircleAvatar = CircleAvatar(
     color: Colors.white,
   )
 );
+
+void showSnackBar({String msg, BuildContext context}){
+  ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(msg))
+  );
+}
+
+void dismissKeyboard(){
+  FocusManager.instance.primaryFocus?.unfocus();
+}

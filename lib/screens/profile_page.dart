@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:thumbing/screens/sign_in.dart';
 import 'package:thumbing/utility/constants.dart';
+
+import '../utility/firebase_authentication.dart';
 
 class ProfilePageScreen extends StatelessWidget {
   static final kProfilePageScreen = 'profile_page_Screen';
@@ -8,7 +11,7 @@ class ProfilePageScreen extends StatelessWidget {
     fontSize: 18.0,
   );
 
-  Padding InformationRow( {String title, String value, String buttonText}) {
+  Padding informationRow( {String title, String value, String buttonText}) {
     return Padding(
       padding: const EdgeInsets.all(9.0),
       child: Row(
@@ -107,12 +110,12 @@ class ProfilePageScreen extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        InformationRow(
+                        informationRow(
                           title: 'Display Name',
                           value: 'Totoro Yo',
                           buttonText: 'Edit',
                         ),
-                        InformationRow(
+                        informationRow(
                           title: 'Email',
                           value: 'totoro@overtherainbow.com',
                           buttonText: 'Edit',
@@ -129,6 +132,10 @@ class ProfilePageScreen extends StatelessWidget {
                             Colors.grey.withAlpha(50),
                           )
                         ),
+                        onPressed: () {
+                          FirebaseAuthentication.signOutUser();
+                          Navigator.pushNamed(context, SignInScreen.kSignInScreen);
+                        },
                         child: Text(
                           'Sign Out',
                           style: kWhiteTextStyle.copyWith(fontSize: 22),

@@ -1,41 +1,32 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:thumbing/screens/home_screen.dart';
-import 'package:thumbing/screens/sign_up.dart';
-import 'package:thumbing/utility/constants.dart';
+import 'package:thumbing/screens/sign_in.dart';
+import 'package:thumbing/utility/firebase_authentication.dart';
 import 'package:thumbing/widgets/social_media_button.dart';
 import 'package:thumbing/widgets/input_form_field.dart';
-import '../utility/firebase_authentication.dart';
+import 'package:thumbing/utility/constants.dart';
 
-class SignInScreen extends StatefulWidget {
-  static final kSignInScreen = 'kSignInScreen';
-  final _kUserNotFound = 'No user found for this email.';
-  final _kWrongPassword = 'Wrong password. Please try again.';
-  final _kDefaultError = 'Error logging in. Please try again.';
-
+class SignUpScreen extends StatefulWidget {
+  static final kSignUpScreen = 'kSignUpScreen';
+  final kWeakPassword = 'Your password is too weak.';
+  final kEmailAlreadyInUse = 'The email provided is already in use';
+  final kDefaultError = 'Error Signing Up. Try again.';
+  final kInvalidEmail = 'The email you provided is invalid';
   @override
-  _SignInScreenState createState() => _SignInScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   FocusNode _emailFocusNode;
   FocusNode _passwordFocusNode;
+  FocusNode _usernameFocusNode;
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  TextEditingController _emailController;
+  TextEditingController _userNameController;
   TextEditingController _passwordController;
-
-  void _checkUserAuthState() {
-    auth.authStateChanges().listen((User user) {
-      if (user == null) {
-        print('User is signed out');
-      } else {
-        print('User is signed in');
-      }
-    });
-  }
+  TextEditingController _emailController;
 
   Color getColorOnFocus(FocusNode focusNode) {
     return focusNode.hasFocus ? Colors.deepPurpleAccent : Colors.grey;
@@ -47,29 +38,26 @@ class _SignInScreenState extends State<SignInScreen> {
     });
   }
 
-  void disposeTextControllers() {
-    _emailController.dispose();
-    _passwordController.dispose();
-  }
-
-  void disposeFocusNodes() {
-    _emailFocusNode.dispose();
-    _passwordFocusNode.dispose();
-  }
-
-  void handleSignInExceptions(String status) {
-    switch (status) {
-      case 'user-not-found':
-        showSnackBar(msg: widget._kUserNotFound, context: context);
+  void handleSignUpExceptions(String status){
+    switch(status){
+      case "weak-password":
+      //show weak password toast
+        showSnackBar(msg: widget.kWeakPassword, context: context);
         break;
-      case 'wrong-password':
-        showSnackBar(msg: widget._kWrongPassword, context: context);
+      case "email-already-in-use":
+      //show email already in use toast
+        showSnackBar(msg: widget.kEmailAlreadyInUse, context: context);
         break;
-      case 'success':
+      case "success":
+      //transfer to home screen
         Navigator.pushNamed(context, HomeScreen.kHomeRoute);
         break;
+      case "invalid-email":
+        showSnackBar(msg: widget.kInvalidEmail, context: context);
+        break;
       default:
-        showSnackBar(msg: widget._kDefaultError, context: context);
+      //show error toast
+        showSnackBar(msg: widget.kDefaultError, context: context);
     }
   }
 
@@ -79,6 +67,8 @@ class _SignInScreenState extends State<SignInScreen> {
     super.initState();
     _emailFocusNode = FocusNode();
     _passwordFocusNode = FocusNode();
+    _usernameFocusNode = FocusNode();
+    _userNameController = TextEditingController();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
   }
@@ -88,14 +78,14 @@ class _SignInScreenState extends State<SignInScreen> {
     // TODO: implement dispose
     super.dispose();
     disposeFocusNodes();
-    disposeTextControllers();
+    disposeControllers();
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      backgroundColor: Colors.white,
+          backgroundColor: Colors.white,
       floatingActionButton: SizedBox(
         width: 70,
         height: 70,
@@ -105,16 +95,15 @@ class _SignInScreenState extends State<SignInScreen> {
             backgroundColor: Colors.deepPurpleAccent,
             onPressed: () async {
               dismissKeyboard();
-              String status = await FirebaseAuthentication.signInUser(
-                  email: _emailController.text.trim(),
-                  password: _passwordController.text.trim());
-              print(status); 
-              handleSignInExceptions(status);
+              String status = await FirebaseAuthentication.signUpUser(email: _emailController.text.trim(), password: _passwordController.text.trim());
+              print(status);
+              handleSignUpExceptions(status);
             },
           ),
         ),
       ),
       body: SingleChildScrollView(
+
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -133,7 +122,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        'Sign In',
+                        'Sign Up',
                         textAlign: TextAlign.start,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -187,11 +176,27 @@ class _SignInScreenState extends State<SignInScreen> {
                         height: 20,
                       ),
                       InputFormField(
+                        focusNode: _usernameFocusNode,
+                        prefixIcon: Icon(Icons.account_circle_outlined,
+                            color: getColorOnFocus(_usernameFocusNode)),
+                        onTap: () => _requestFocus(_usernameFocusNode),
+                        hintText: 'Your cool username',
+                        labelText: 'Username',
+                        labelStyle: TextStyle(
+                          color: getColorOnFocus(_usernameFocusNode),
+                        ),
+                        controller: _userNameController,
+                        obscureText: false,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      InputFormField(
                         focusNode: _emailFocusNode,
                         prefixIcon: Icon(Icons.email,
                             color: getColorOnFocus(_emailFocusNode)),
                         onTap: () => _requestFocus(_emailFocusNode),
-                        hintText: 'someone@emaill.com',
+                        hintText: 'someone@email.com',
                         labelText: 'Email',
                         labelStyle: TextStyle(
                           color: getColorOnFocus(_emailFocusNode),
@@ -216,10 +221,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         obscureText: true,
                       ),
                       SizedBox(
-                        height: 20,
-                      ),
-                      SizedBox(
-                        height: 20,
+                        height: 40,
                       ),
                       RichText(
                         textAlign: TextAlign.center,
@@ -229,16 +231,16 @@ class _SignInScreenState extends State<SignInScreen> {
                               color: Colors.grey,
                             ),
                             children: [
-                              TextSpan(text: 'Don\'t have an account? '),
+                              TextSpan(text: 'Already have an account? '),
                               TextSpan(
-                                  text: 'Sign Up',
+                                  text: 'Sign In',
                                   style: TextStyle(
                                     color: Colors.blueAccent,
                                   ),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                       Navigator.pushNamed(
-                                          context, SignUpScreen.kSignUpScreen);
+                                          context, SignInScreen.kSignInScreen);
                                     }),
                             ]),
                       ),
@@ -252,4 +254,19 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     ));
   }
+
+
+  void disposeFocusNodes() {
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    _usernameFocusNode.dispose();
+  }
+
+  void disposeControllers() {
+    _userNameController.dispose();
+    _passwordController.dispose();
+    _emailController.dispose();
+  }
+
+
 }
