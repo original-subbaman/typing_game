@@ -1,17 +1,31 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:thumbing/screens/sign_in.dart';
 import 'package:thumbing/utility/constants.dart';
+import 'package:thumbing/firebase/firebase_constants.dart';
+import '../firebase/firebase_authentication.dart';
 
-import '../utility/firebase_authentication.dart';
-
-class ProfilePageScreen extends StatelessWidget {
+class ProfilePageScreen extends StatefulWidget {
   static final kProfilePageScreen = 'profile_page_Screen';
+
+  ProfilePageScreen();
+
+  @override
+  State<ProfilePageScreen> createState() => _ProfilePageScreenState();
+}
+
+class _ProfilePageScreenState extends State<ProfilePageScreen> {
+  String fullName;
+  String userName;
+  String email;
   final kWhiteTextStyle = TextStyle(
     color: Colors.white,
     fontSize: 18.0,
   );
 
-  Padding informationRow( {String title, String value, String buttonText}) {
+  Padding informationRow({String title, String value, String buttonText}) {
     return Padding(
       padding: const EdgeInsets.all(9.0),
       child: Row(
@@ -38,11 +52,11 @@ class ProfilePageScreen extends StatelessWidget {
           TextButton(
             onPressed: null,
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(
-                  Colors.grey.withAlpha(50)),
+              backgroundColor:
+                  MaterialStateProperty.all(Colors.grey.withAlpha(50)),
             ),
             child: Text(
-             buttonText,
+              buttonText,
               style: kWhiteTextStyle.copyWith(fontSize: 16.0),
             ),
           ),
@@ -51,11 +65,31 @@ class ProfilePageScreen extends StatelessWidget {
     );
   }
 
-  ProfilePageScreen();
+  void setUserData() {
+    FirebaseFirestore.instance
+        .collection(kUserCollection)
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .get()
+        .then((docSnapshot) {
+      if (docSnapshot.exists) {
+        Map<String, dynamic> data = docSnapshot.data();
+        setState(() {
+          fullName = data['full_name'];
+          userName = data['user_name'];
+          email = data['email'];
+        });
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setUserData();
+  }
 
   @override
   Widget build(BuildContext context) {
-
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
@@ -102,7 +136,9 @@ class ProfilePageScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(height: 16,),
+                  SizedBox(
+                    height: 16,
+                  ),
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.grey.withAlpha(50),
@@ -111,13 +147,18 @@ class ProfilePageScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         informationRow(
-                          title: 'Display Name',
-                          value: 'Totoro Yo',
+                          title: 'Full Name',
+                          value: '$fullName',
+                          buttonText: 'Edit',
+                        ),
+                        informationRow(
+                          title: 'User Name',
+                          value: '$userName',
                           buttonText: 'Edit',
                         ),
                         informationRow(
                           title: 'Email',
-                          value: 'totoro@overtherainbow.com',
+                          value: '$email',
                           buttonText: 'Edit',
                         ),
                       ],
@@ -128,13 +169,13 @@ class ProfilePageScreen extends StatelessWidget {
                       alignment: Alignment.bottomCenter,
                       child: TextButton(
                         style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                            Colors.grey.withAlpha(50),
-                          )
-                        ),
+                            backgroundColor: MaterialStateProperty.all(
+                          Colors.grey.withAlpha(50),
+                        )),
                         onPressed: () {
-                          FirebaseAuthentication.signOutUser();
-                          Navigator.pushNamed(context, SignInScreen.kSignInScreen);
+                          MyFirebaseAuthentication.signOutUser();
+                          Navigator.pushNamed(
+                              context, SignInScreen.kSignInScreen);
                         },
                         child: Text(
                           'Sign Out',

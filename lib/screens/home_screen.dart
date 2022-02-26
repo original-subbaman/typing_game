@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:thumbing/firebase/firebase_authentication.dart';
 import 'package:thumbing/model/expanded_screen_arguments.dart';
 import 'package:thumbing/screens/expanded_wpm_screen.dart';
 import 'package:thumbing/screens/profile_page.dart';
@@ -66,6 +67,11 @@ class _HomeScreenState extends State<HomeScreen> {
   String accValueText = '100';
   String bestWPM = '72';
   String bestAcc = '99';
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

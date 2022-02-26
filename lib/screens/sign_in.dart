@@ -7,7 +7,7 @@ import 'package:thumbing/screens/sign_up.dart';
 import 'package:thumbing/utility/constants.dart';
 import 'package:thumbing/widgets/social_media_button.dart';
 import 'package:thumbing/widgets/input_form_field.dart';
-import '../utility/firebase_authentication.dart';
+import '../firebase/firebase_authentication.dart';
 
 class SignInScreen extends StatefulWidget {
   static final kSignInScreen = 'kSignInScreen';
@@ -105,7 +105,7 @@ class _SignInScreenState extends State<SignInScreen> {
             backgroundColor: Colors.deepPurpleAccent,
             onPressed: () async {
               dismissKeyboard();
-              String status = await FirebaseAuthentication.signInUser(
+              String status = await MyFirebaseAuthentication.signInUser(
                   email: _emailController.text.trim(),
                   password: _passwordController.text.trim());
               print(status); 

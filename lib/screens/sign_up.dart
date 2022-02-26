@@ -1,9 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:thumbing/firebase/firebase_firestore.dart';
 import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/screens/sign_in.dart';
-import 'package:thumbing/utility/firebase_authentication.dart';
+import 'package:thumbing/firebase/firebase_authentication.dart';
 import 'package:thumbing/widgets/social_media_button.dart';
 import 'package:thumbing/widgets/input_form_field.dart';
 import 'package:thumbing/utility/constants.dart';
@@ -22,11 +23,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
   FocusNode _emailFocusNode;
   FocusNode _passwordFocusNode;
   FocusNode _usernameFocusNode;
+  FocusNode _fullNameFocusNode;
   FirebaseAuth auth = FirebaseAuth.instance;
 
   TextEditingController _userNameController;
   TextEditingController _passwordController;
   TextEditingController _emailController;
+  TextEditingController _fullNameController;
 
   Color getColorOnFocus(FocusNode focusNode) {
     return focusNode.hasFocus ? Colors.deepPurpleAccent : Colors.grey;
@@ -38,7 +41,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
   }
 
-  void handleSignUpExceptions(String status){
+  Future<String> signUpUser() async{
+    return await MyFirebaseAuthentication.signUpUser(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim());
+  }
+
+  Future<String> createNewUser() async{
+    return  await MyCloudFirestore.addUser(
+        uid: FirebaseAuth.instance.currentUser.uid,
+        username: _userNameController.text.trim(),
+        fullName: _fullNameController.text.trim(),
+        email: _emailController.text.trim());
+  }
+
+  void showUserSignUpException(String status){
     switch(status){
       case "weak-password":
       //show weak password toast
@@ -47,10 +64,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       case "email-already-in-use":
       //show email already in use toast
         showSnackBar(msg: widget.kEmailAlreadyInUse, context: context);
-        break;
-      case "success":
-      //transfer to home screen
-        Navigator.pushNamed(context, HomeScreen.kHomeRoute);
         break;
       case "invalid-email":
         showSnackBar(msg: widget.kInvalidEmail, context: context);
@@ -61,6 +74,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
+  void showCreateUserException(String status){
+    switch(status){
+      case "success":
+        Navigator.pushNamed(context, HomeScreen.kHomeRoute);
+        break;
+      default:
+        showSnackBar(msg: "Error creating user. Try again.", context: context);
+        MyFirebaseAuthentication.deleteCurrentUser();
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -68,9 +92,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _emailFocusNode = FocusNode();
     _passwordFocusNode = FocusNode();
     _usernameFocusNode = FocusNode();
+    _fullNameFocusNode = FocusNode();
     _userNameController = TextEditingController();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
+    _fullNameController = TextEditingController();
+
   }
 
   @override
@@ -95,9 +122,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
             backgroundColor: Colors.deepPurpleAccent,
             onPressed: () async {
               dismissKeyboard();
-              String status = await FirebaseAuthentication.signUpUser(email: _emailController.text.trim(), password: _passwordController.text.trim());
-              print(status);
-              handleSignUpExceptions(status);
+              String status = await signUpUser();
+              if(status != "success") {
+                showUserSignUpException(status);
+                return;
+              }
+              status = await createNewUser();
+              showCreateUserException(status);
             },
           ),
         ),
@@ -171,6 +202,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           fontWeight: FontWeight.bold,
                           fontSize: 18.0,
                         ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      InputFormField(
+                        focusNode: _fullNameFocusNode,
+                        prefixIcon: Icon(Icons.emoji_emotions_outlined,
+                            color: getColorOnFocus(_fullNameFocusNode)),
+                        onTap: () => _requestFocus(_fullNameFocusNode),
+                        hintText: 'Your full name',
+                        labelText: 'Full Name',
+                        labelStyle: TextStyle(
+                          color: getColorOnFocus(_fullNameFocusNode),
+                        ),
+                        controller: _fullNameController,
+                        obscureText: false,
                       ),
                       SizedBox(
                         height: 20,
@@ -260,12 +307,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
     _usernameFocusNode.dispose();
+    _fullNameFocusNode.dispose();
   }
 
   void disposeControllers() {
     _userNameController.dispose();
     _passwordController.dispose();
     _emailController.dispose();
+    _fullNameController.dispose();
   }
 
 
