@@ -93,13 +93,12 @@ class _ProfilePageScreenState extends State<ProfilePageScreen> {
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.blueGrey.shade800.withAlpha(50),
+            backgroundColor: kVeryDarkPurple,
+            elevation: 0,
             title: Text(
               'My Profile',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -179,7 +178,7 @@ class _ProfilePageScreenState extends State<ProfilePageScreen> {
                         },
                         child: Text(
                           'Sign Out',
-                          style: kWhiteTextStyle.copyWith(fontSize: 22),
+                          style: kWhiteTextStyle.copyWith(fontSize: 22, fontWeight: FontWeight.normal),
                         ),
                       ),
                     ),

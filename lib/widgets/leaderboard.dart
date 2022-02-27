@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:thumbing/screens/leaderboard_screen.dart';
 import 'package:thumbing/utility/constants.dart';
+
 class Leaderboard extends StatelessWidget {
   final items;
-
-  Leaderboard(this.items);
+  final bool showExpand;
+  final borderRadius;
+  Leaderboard(this.items, this.showExpand, this.borderRadius);
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +14,7 @@ class Leaderboard extends StatelessWidget {
       elevation: 10.0,
       shadowColor: Colors.deepPurpleAccent.shade400,
       color: Colors.black54,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: borderRadius,
       child: Container(
         width: double.infinity,
         child: Padding(
@@ -20,12 +23,31 @@ class Leaderboard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Leaderboard',
-                textAlign: TextAlign.left,
-                style: kCardTextStyle.copyWith(
-                  fontSize: 18,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Leaderboard',
+                    textAlign: TextAlign.left,
+                    style: kCardTextStyle.copyWith(
+                      fontSize: 18,
+                    ),
+                  ),
+                  Visibility(
+                    visible: showExpand,
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.pushNamed(
+                            context, LeaderboardScreen.kLeaderboardScreen);
+                      },
+                      icon: Icon(
+                        Icons.north_east_rounded,
+                        size: 25,
+                      ),
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
               Expanded(
                 child: ListView.builder(
@@ -43,8 +65,7 @@ class Leaderboard extends StatelessWidget {
                       ),
                       trailing: Text(
                         items[index].rank,
-                        style:
-                        kCardTextStyle.copyWith(fontSize: 15),
+                        style: kCardTextStyle.copyWith(fontSize: 15),
                       ),
                     );
                   },
