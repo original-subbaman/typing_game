@@ -78,11 +78,11 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () => Navigator.pushNamed(
                   context, ProfilePageScreen.kProfilePageScreen),
               child: Container(
-                margin: EdgeInsets.only(right: 8.0),
+                margin: EdgeInsets.only(right: 8.0, top: 8.0),
                 child: Hero(
                   tag: 'profile_hero',
                   child: CircleAvatar(
-                    radius: 24,
+                    radius: 22,
                     backgroundImage: AssetImage('assets/images/totoro.jpg'),
                   ),
                 ),

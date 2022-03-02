@@ -6,7 +6,7 @@ final kWPMChartTile = 'Y - WPM, X - Days';
 final kAccuracyChartTile = 'Y - Accuracy, X - Days';
 
 //Colors
-final kVeryDarkPurple = Color.fromRGBO(62, 35, 110, 1.0);
+final kVeryDarkPurple = const Color.fromRGBO(81, 45, 168, 1.0);
 
 
 final kAlertDialogTextButtonStyle = GoogleFonts.lato(

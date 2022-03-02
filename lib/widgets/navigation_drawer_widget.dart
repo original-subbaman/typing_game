@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:thumbing/screens/league_screen.dart';
 import 'package:thumbing/utility/constants.dart';
 
 class NavigationDrawerWidget extends StatelessWidget{
@@ -8,6 +9,7 @@ class NavigationDrawerWidget extends StatelessWidget{
     // TODO: implement build
     return Drawer(
       child: Material(
+        color: Colors.deepPurple.shade500,
         child: Container(
           child: ListView(
             children: [
@@ -15,10 +17,10 @@ class NavigationDrawerWidget extends StatelessWidget{
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   'The Typing Game',
-                  style: kCardTextStyle.copyWith(color: Colors.deepPurple, fontSize: 22),
+                  style: kCardTextStyle.copyWith(fontSize: 22),
                 ),
               ),
-              buildMenuItems(),
+              buildMenuItems(context),
             ],
           ),
         ),
@@ -26,15 +28,20 @@ class NavigationDrawerWidget extends StatelessWidget{
     );
   }
 
-  Widget buildMenuItems() {
+  Widget buildMenuItems(context) {
     final color = Colors.white;
     final hoverColor = Colors.deepPurple;
 
     return ListTile(
-      leading: Icon(Icons.airline_seat_flat, color: color,),
-      title: Text('some text'),
+      leading: Icon(Icons.bar_chart_rounded, color: color,),
+      title: Text('Leagues', style: kCardTextStyle,),
       hoverColor: hoverColor,
-      onTap: (){},
+      onTap: (){
+
+        Navigator.popAndPushNamed(context, LeagueScreen.kLeagueScreen);
+
+
+      },
     );
 
   }

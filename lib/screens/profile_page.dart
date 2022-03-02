@@ -93,8 +93,8 @@ class _ProfilePageScreenState extends State<ProfilePageScreen> {
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
-            backgroundColor: kVeryDarkPurple,
-            elevation: 0,
+            backgroundColor: Colors.deepPurple.shade800,
+            elevation: 0.0,
             title: Text(
               'My Profile',
               style: TextStyle(
@@ -102,7 +102,7 @@ class _ProfilePageScreenState extends State<ProfilePageScreen> {
               ),
             ),
           ),
-          backgroundColor: kVeryDarkPurple,
+          backgroundColor: Colors.deepPurple.shade800,
           body: Padding(
             padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
             child: Container(
@@ -127,7 +127,7 @@ class _ProfilePageScreenState extends State<ProfilePageScreen> {
                     width: double.infinity,
                     alignment: Alignment.center,
                     child: Text(
-                      'Totoro Yo',
+                      '$userName',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 22,

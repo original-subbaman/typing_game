@@ -5,10 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:thumbing/firebase/firebase_constants.dart';
 
 class MyCloudFirestore {
-
+  static final db = FirebaseFirestore.instance;
   static Future<String> addUser(
       {String uid, String username, String fullName, String email}) async {
-    CollectionReference users = FirebaseFirestore.instance.collection(kUserCollection);
+    CollectionReference users = db.collection(kUserCollection);
     String status;
     User user = await users
         .doc(uid)

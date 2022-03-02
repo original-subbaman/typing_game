@@ -6,6 +6,7 @@ import 'package:thumbing/screens/expanded_acc_screen.dart';
 import 'package:thumbing/screens/expanded_wpm_screen.dart';
 import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/screens/leaderboard_screen.dart';
+import 'package:thumbing/screens/league_screen.dart';
 import 'package:thumbing/screens/profile_page.dart';
 import 'package:thumbing/screens/sign_in.dart';
 import 'package:thumbing/screens/sign_up.dart';
@@ -28,6 +29,7 @@ void main() async{
         SignInScreen.kSignInScreen: (context) => SignInScreen(),
         SignUpScreen.kSignUpScreen: (context) => SignUpScreen(),
         LeaderboardScreen.kLeaderboardScreen: (context) => LeaderboardScreen(),
+        LeagueScreen.kLeagueScreen: (context) => LeagueScreen(),
 
       }
     ),
