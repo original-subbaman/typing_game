@@ -27,16 +27,6 @@ class _SignInScreenState extends State<SignInScreen> {
   TextEditingController _emailController;
   TextEditingController _passwordController;
 
-  void _checkUserAuthState() {
-    auth.authStateChanges().listen((User user) {
-      if (user == null) {
-        print('User is signed out');
-      } else {
-        print('User is signed in');
-      }
-    });
-  }
-
   Color getColorOnFocus(FocusNode focusNode) {
     return focusNode.hasFocus ? Colors.deepPurpleAccent : Colors.grey;
   }
@@ -105,7 +95,7 @@ class _SignInScreenState extends State<SignInScreen> {
             backgroundColor: Colors.deepPurpleAccent,
             onPressed: () async {
               dismissKeyboard();
-              String status = await MyFirebaseAuthentication.signInUser(
+              String status = await MyFirebaseAuth.signInUser(
                   email: _emailController.text.trim(),
                   password: _passwordController.text.trim());
               print(status); 

@@ -1,7 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:thumbing/screens/Wrapper.dart';
+import 'package:thumbing/screens/landing_page.dart';
+import 'package:thumbing/screens/create_league.dart';
 import 'package:thumbing/screens/expanded_acc_screen.dart';
 import 'package:thumbing/screens/expanded_wpm_screen.dart';
 import 'package:thumbing/screens/home_screen.dart';
@@ -18,9 +19,9 @@ void main() async{
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: Wrapper.kWrapperRoute,
+      initialRoute: Wrapper.kLandingPage,
       routes: {
-        Wrapper.kWrapperRoute: (context) => Wrapper(),
+        Wrapper.kLandingPage: (context) => Wrapper(),
         HomeScreen.kHomeRoute: (context) => HomeScreen(),
         TypingTestScreen.kTypingScreenRoute: (context) => TypingTestScreen(),
         ExpandedWPMScreen.kExpandedWPMScreen: (context) => ExpandedWPMScreen(),
@@ -30,7 +31,7 @@ void main() async{
         SignUpScreen.kSignUpScreen: (context) => SignUpScreen(),
         LeaderboardScreen.kLeaderboardScreen: (context) => LeaderboardScreen(),
         LeagueScreen.kLeagueScreen: (context) => LeagueScreen(),
-
+        CreateNewLeagueScreen.kCreateNewLeagueScreen: (context) => CreateNewLeagueScreen(),
       }
     ),
   );

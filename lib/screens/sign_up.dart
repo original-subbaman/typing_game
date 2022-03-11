@@ -42,7 +42,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<String> signUpUser() async{
-    return await MyFirebaseAuthentication.signUpUser(
+    return await MyFirebaseAuth.signUpUser(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim());
   }
@@ -81,7 +81,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         break;
       default:
         showSnackBar(msg: "Error creating user. Try again.", context: context);
-        MyFirebaseAuthentication.deleteCurrentUser();
+        MyFirebaseAuth.deleteCurrentUser();
     }
   }
 

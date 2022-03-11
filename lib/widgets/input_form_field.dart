@@ -29,6 +29,7 @@ class _InputFormField extends State<InputFormField>{
           border: OutlineInputBorder(),
           prefixIcon: widget.prefixIcon,
           hintText: widget.hintText,
+          hintStyle: TextStyle(color: Colors.deepPurple),
           labelText: widget.labelText,
           labelStyle: widget.labelStyle,
           focusedBorder: OutlineInputBorder(

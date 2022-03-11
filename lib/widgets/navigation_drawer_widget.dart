@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:thumbing/screens/create_league.dart';
 import 'package:thumbing/screens/league_screen.dart';
 import 'package:thumbing/utility/constants.dart';
 
@@ -20,7 +21,9 @@ class NavigationDrawerWidget extends StatelessWidget{
                   style: kCardTextStyle.copyWith(fontSize: 22),
                 ),
               ),
-              buildMenuItems(context),
+              createListTile(context: context, title: 'Leagues',ontap: (){Navigator.popAndPushNamed(context, LeagueScreen.kLeagueScreen);}),
+              createListTile(context: context, title: 'Create New League', ontap: (){Navigator.popAndPushNamed(context, CreateNewLeagueScreen.kCreateNewLeagueScreen);}),
+
             ],
           ),
         ),
@@ -28,20 +31,14 @@ class NavigationDrawerWidget extends StatelessWidget{
     );
   }
 
-  Widget buildMenuItems(context) {
+  Widget createListTile({context, title, ontap}) {
     final color = Colors.white;
     final hoverColor = Colors.deepPurple;
 
     return ListTile(
-      leading: Icon(Icons.bar_chart_rounded, color: color,),
-      title: Text('Leagues', style: kCardTextStyle,),
+      title: Text(title, style: kCardTextStyle,),
       hoverColor: hoverColor,
-      onTap: (){
-
-        Navigator.popAndPushNamed(context, LeagueScreen.kLeagueScreen);
-
-
-      },
+      onTap: ontap,
     );
 
   }
