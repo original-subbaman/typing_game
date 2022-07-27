@@ -15,7 +15,7 @@ class WPMCalculator{
   }
 
   double getNetWPM(){
-    return (_calculateGrossWPM() - (uncorrectedErrors/minutes));
+    return (_calculateGrossWPM() - (uncorrectedErrors/minutes)).abs();
   }
 
   double getAccuracy(){

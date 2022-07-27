@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:thumbing/utility/constants.dart';
 class CircularScoreWidget extends StatefulWidget {
 
   final int score;
@@ -37,40 +38,39 @@ class _CircularScoreWidgetState extends State<CircularScoreWidget> with SingleTi
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 90,
-      height: 90,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: widget.color,
-        gradient: LinearGradient(
-          colors: [Colors.deepPurpleAccent, Colors.lightBlue],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+    return Material(
+      elevation: kCardElevation,
+      borderRadius: BorderRadius.circular(45.0),
+      child: Container(
+        width: 90,
+        height: 90,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: widget.color,
         ),
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              animation.value.toString(),
-              textAlign: TextAlign.center,
-              style: GoogleFonts.lato(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                animation.value.toString(),
+                textAlign: TextAlign.center,
+                style: GoogleFonts.lato(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
-            ),
-            Text(
-              widget.appendText,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.lato(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            )
-          ],
-        ),
-      ),);
+              Text(
+                widget.appendText,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.lato(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              )
+            ],
+          ),
+        ),),
+    );
   }
 }

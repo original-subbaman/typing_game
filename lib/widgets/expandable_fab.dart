@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+
+import 'package:thumbing/utility/constants.dart';
 class ExpandableFab extends StatefulWidget {
   final bool initialOpen;
   final double distance;
@@ -122,7 +124,7 @@ class _ExpandableFabState extends State<ExpandableFab> with SingleTickerProvider
           curve: const Interval(0.25, 1.0, curve: Curves.easeInOut),
           duration: const Duration(milliseconds: 250),
           child: FloatingActionButton(
-            backgroundColor: Colors.deepPurpleAccent,
+            backgroundColor: kFABColor,
             onPressed: _toggle,
             child: const Icon(Icons.create),
           ),
@@ -152,7 +154,7 @@ class ActionButton extends StatelessWidget {
         child: IconButton(
           onPressed: onPressed,
           icon: icon,
-          color: Colors.deepPurpleAccent,
+          color: kFABColor,
         ),
       ),
     );

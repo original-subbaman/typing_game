@@ -14,7 +14,15 @@ class ExpandedAccScreen extends StatelessWidget {
         ModalRoute.of(context).settings.arguments as ExpandedScreenArguments;
     return SafeArea(
         child: Scaffold(
-      backgroundColor: Colors.deepPurple.shade700,
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            iconTheme: IconThemeData(
+              size: 35,
+              color: kLightBlueAccent,
+            ),
+          ),
+      backgroundColor: kBGColor,
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
@@ -30,9 +38,9 @@ class ExpandedAccScreen extends StatelessWidget {
                   valueText: args.valueText,
                   bgColor: Colors.white,
                   titleTxtStyle: kCardTextStyle.copyWith(
-                      fontSize: 40, color: Colors.deepPurple),
+                      fontSize: 40, color: kLightBlueAccent),
                   valueTxtStyle: kCardTextStyle.copyWith(
-                    color: Colors.deepPurple,
+                    color: kLightBlueAccent,
                   ),
                 ),
               ),
@@ -40,7 +48,7 @@ class ExpandedAccScreen extends StatelessWidget {
             Flexible(
               flex: 1,
               child: Material(
-                elevation: 10.0,
+                elevation: 5.0,
                 shadowColor: Colors.deepPurpleAccent.shade400,
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
@@ -56,14 +64,14 @@ class ExpandedAccScreen extends StatelessWidget {
                             'Best WPM achieved',
                             textAlign: TextAlign.left,
                             style: kCardTextStyle.copyWith(
-                              color: Colors.deepPurple,
+                              color: kLightBlueAccent,
                             ),
                           ),
                         ),
                         Text(
                           args.bestValueText,
                           style: kCardTextStyle.copyWith(
-                            color: Colors.deepPurple,
+                            color: kLightBlueAccent,
                           ),
                         ),
                       ],

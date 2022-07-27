@@ -38,7 +38,7 @@ class _CreateNewLeagueScreen extends State<CreateNewLeagueScreen> {
 
 
   JoiningChoice _joiningChoice = JoiningChoice.invite_only;
-  List<String> players = [];
+  List<String> players =[];
   int noOfPlayers;
 
   @override
@@ -150,6 +150,7 @@ class _CreateNewLeagueScreen extends State<CreateNewLeagueScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: TextButton(
                         onPressed: () async {
+                          players.add(MyFirebaseAuth.currentUserId);
                           League newLeague = League(
                             adminName:
                                 await MyCloudFirestore.getCurrentUserName(),

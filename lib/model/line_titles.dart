@@ -18,7 +18,7 @@ class LineTitles {
         return '';
       },
       getTextStyles: (value, textStyle) => TextStyle(
-        color: Colors.white,
+        color: Colors.lightBlue,
       ) ,
     ),
     leftTitles: SideTitles(
@@ -28,7 +28,7 @@ class LineTitles {
         return '';
       },
       getTextStyles: (value, textStyle) => TextStyle(
-        color: Colors.white,
+        color: Colors.lightBlue,
       ),
       reservedSize: 30,
       interval: 20,

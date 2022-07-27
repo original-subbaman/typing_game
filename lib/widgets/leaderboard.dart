@@ -12,8 +12,7 @@ class Leaderboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       elevation: 10.0,
-      shadowColor: Colors.deepPurpleAccent.shade400,
-      color: Colors.black54,
+      color: kLightBlueAccent,
       borderRadius: borderRadius,
       child: Container(
         width: double.infinity,

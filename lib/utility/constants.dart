@@ -7,8 +7,11 @@ final kAccuracyChartTile = 'Y - Accuracy, X - Days';
 
 //Colors
 final kVeryDarkPurple = const Color.fromRGBO(81, 45, 168, 1.0);
+final kBGColor = const Color(0xffB8FFF9);
+final kLightBlueAccent = const Color(0xff47B5FF);
+final kFABColor = const Color(0xffF94C66);
 
-
+final kCardElevation = 5.0;
 final kAlertDialogTextButtonStyle = GoogleFonts.lato(
     color: Colors.white,
     fontSize: 18,
@@ -23,8 +26,8 @@ final kCardTextStyle = GoogleFonts.lato(
 
 final kRankUpIcon = Icon(
   Icons.arrow_circle_up_rounded,
-  color: Colors.green,
-  size: 30,
+  color: Colors.lightGreen,
+  size: 35,
 );
 
 final kRankDownIcon = Icon(

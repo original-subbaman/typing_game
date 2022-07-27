@@ -61,15 +61,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        drawer: NavigationDrawerWidget(),
         appBar: AppBar(
+          iconTheme: IconThemeData(color: kFABColor),
           elevation: 0,
-          backgroundColor: Colors.deepPurple.shade700,
+          backgroundColor: Colors.transparent,
           title: Text(
             "Hello $userName",
             style: GoogleFonts.lato(
-              color: Colors.white,
-              fontSize: 20,
+              color: Colors.lightBlue,
+              fontSize: 25,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -81,16 +81,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 margin: EdgeInsets.only(right: 8.0, top: 8.0),
                 child: Hero(
                   tag: 'profile_hero',
-                  child: CircleAvatar(
-                    radius: 22,
-                    backgroundImage: AssetImage('assets/images/totoro.jpg'),
+                  child: Center(
+                    child: CircleAvatar(
+                      radius: 22,
+                      backgroundImage: AssetImage('assets/images/totoro.jpg'),
+                    ),
                   ),
                 ),
               ),
             )
           ],
         ),
-        backgroundColor: Colors.deepPurple.shade700,
+        backgroundColor: kBGColor,
         floatingActionButton: ExpandableFab(
           distance: 112.0,
           children: <Widget>[
@@ -174,10 +176,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           valueText: accValueText,
                           bgColor: Colors.white,
                           titleTxtStyle: kCardTextStyle.copyWith(
-                              fontSize: 20, color: Colors.deepPurple),
+                              fontSize: 20, color: Colors.lightBlue),
                           valueTxtStyle: kCardTextStyle.copyWith(
                             fontSize: 60,
-                            color: Colors.deepPurple,
+                            color: Colors.lightBlue,
                           ),
                         ),
                       ),

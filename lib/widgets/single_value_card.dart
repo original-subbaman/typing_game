@@ -9,8 +9,7 @@ class SingleValueCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      elevation: 10.0,
-      shadowColor: Colors.deepPurpleAccent.shade400,
+      elevation: kCardElevation,
       color: Colors.white,
       borderRadius: BorderRadius.circular(20),
       child: Container(
@@ -25,13 +24,13 @@ class SingleValueCard extends StatelessWidget {
                   valueTitle,
                   textAlign: TextAlign.left,
                   style: kCardTextStyle.copyWith(
-                    color: Colors.deepPurple,
+                    color: Colors.lightBlue,
                   ),
                 ),
               ),
               Text(value,
                   style: kCardTextStyle.copyWith(
-                    color: Colors.deepPurple,
+                    color: Colors.lightBlue,
                   )),
               kRankUpIcon,
             ],

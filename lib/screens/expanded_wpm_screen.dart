@@ -12,7 +12,13 @@ class ExpandedWPMScreen extends StatelessWidget {
         ModalRoute.of(context).settings.arguments as ExpandedScreenArguments;
     return SafeArea(
         child: Scaffold(
-      backgroundColor: Colors.deepPurple.shade700,
+      backgroundColor: kBGColor,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: IconThemeData(color: kLightBlueAccent, size: 35),
+
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
         child: Column(
@@ -40,7 +46,7 @@ class ExpandedWPMScreen extends StatelessWidget {
             Flexible(
               flex: 1,
               child: Material(
-                elevation: 10.0,
+                elevation: kCardElevation,
                 shadowColor: Colors.deepPurpleAccent.shade400,
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
@@ -56,14 +62,14 @@ class ExpandedWPMScreen extends StatelessWidget {
                             'Best WPM achieved',
                             textAlign: TextAlign.left,
                             style: kCardTextStyle.copyWith(
-                              color: Colors.deepPurple,
+                              color: Colors.lightBlue,
                             ),
                           ),
                         ),
                         Text(
                           args.bestValueText,
                           style: kCardTextStyle.copyWith(
-                            color: Colors.deepPurple,
+                            color: Colors.lightBlue,
                           ),
                         ),
                       ],

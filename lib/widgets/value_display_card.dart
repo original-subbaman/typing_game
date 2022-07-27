@@ -23,9 +23,8 @@ class ValueDisplayCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      elevation: 10.0,
-      shadowColor: Colors.deepPurpleAccent.shade400,
-      color: bgColor == null? Colors.black54 : bgColor,
+      elevation: kCardElevation,
+      color: bgColor == null? kLightBlueAccent : bgColor,
       borderRadius: BorderRadius.circular(20),
       child: Container(
         width: double.infinity,
