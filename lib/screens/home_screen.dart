@@ -3,22 +3,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:thumbing/firebase/firebase_authentication.dart';
 import 'package:thumbing/firebase/firebase_constants.dart';
-import 'package:thumbing/model/expanded_screen_arguments.dart';
-import 'package:thumbing/screens/expanded_wpm_screen.dart';
+import 'package:thumbing/model/leaderboard_item.dart';
 import 'package:thumbing/screens/profile_page.dart';
+import 'package:thumbing/screens/test_settings.dart';
 import 'package:thumbing/screens/typing_test_screen.dart';
 import 'package:thumbing/utility/action_button_icon_icons.dart';
 import 'package:thumbing/utility/constants.dart';
-import 'package:thumbing/widgets/navigation_drawer_widget.dart';
 import 'package:thumbing/widgets/expandable_fab.dart';
 import 'package:thumbing/widgets/leaderboard.dart';
 import 'package:thumbing/widgets/single_value_card.dart';
 import 'package:thumbing/widgets/value_display_card.dart';
-import 'package:thumbing/model/leaderboard_item.dart';
-
-import 'expanded_acc_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const kHomeRoute = 'home';
@@ -93,22 +88,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         backgroundColor: kBGColor,
-        floatingActionButton: ExpandableFab(
-          distance: 112.0,
-          children: <Widget>[
-            ActionButton(
-              onPressed: () => Navigator.pushNamed(
-                  context, TypingTestScreen.kTypingScreenRoute),
-              icon: Icon(ActionButtonIcon.leaf, color: Colors.deepPurpleAccent),
-            ),
-            ActionButton(
-              onPressed: null,
-              icon: Icon(
-                ActionButtonIcon.medal,
-                color: Colors.deepPurpleAccent,
-              ),
-            ),
-          ],
+        floatingActionButton: FloatingActionButton(
+          onPressed: () =>
+              Navigator.pushNamed(context, TestSetting.kTestSetting),
+          child: Image.asset("assets/icons/letter-t-.png"),
         ),
         body: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -121,35 +104,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Flexible(
                     flex: 1,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          ExpandedWPMScreen.kExpandedWPMScreen,
-                          arguments: ExpandedScreenArguments(
-                            avgWPMText,
-                            Colors.white,
-                            wpmValueText,
-                            Colors.white,
-                            null,
-                            bestWPM,
-                          ),
-                        );
-                      },
-                      child: Hero(
-                        tag: 'wpmExpand',
-                        child: ValueDisplayCard(
-                          titleText: avgWPMText,
-                          valueText: wpmValueText,
-                          titleTxtStyle: kCardTextStyle.copyWith(
-                            fontSize: 20,
-                            color: Colors.white,
-                          ),
-                          valueTxtStyle: kCardTextStyle.copyWith(
-                            fontSize: 60,
-                            color: Colors.white,
-                          ),
-                        ),
+                    child: ValueDisplayCard(
+                      titleText: avgWPMText,
+                      valueText: wpmValueText,
+                      titleTxtStyle: kCardTextStyle.copyWith(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
+                      valueTxtStyle: kCardTextStyle.copyWith(
+                        fontSize: 60,
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -158,30 +122,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Flexible(
                     flex: 1,
-                    child: GestureDetector(
-                      onTap: () => Navigator.pushNamed(
-                          context, ExpandedAccScreen.kExpandedAccScreen,
-                          arguments: ExpandedScreenArguments(
-                            avgAccText,
-                            Colors.deepPurple,
-                            accValueText,
-                            Colors.deepPurple,
-                            Colors.white,
-                            bestAcc,
-                          )),
-                      child: Hero(
-                        tag: 'accExpand',
-                        child: ValueDisplayCard(
-                          titleText: avgAccText,
-                          valueText: accValueText,
-                          bgColor: Colors.white,
-                          titleTxtStyle: kCardTextStyle.copyWith(
-                              fontSize: 20, color: Colors.lightBlue),
-                          valueTxtStyle: kCardTextStyle.copyWith(
-                            fontSize: 60,
-                            color: Colors.lightBlue,
-                          ),
-                        ),
+                    child: ValueDisplayCard(
+                      titleText: avgAccText,
+                      valueText: accValueText,
+                      bgColor: Colors.white,
+                      titleTxtStyle: kCardTextStyle.copyWith(
+                          fontSize: 20, color: Colors.lightBlue),
+                      valueTxtStyle: kCardTextStyle.copyWith(
+                        fontSize: 60,
+                        color: Colors.lightBlue,
                       ),
                     ),
                   ),

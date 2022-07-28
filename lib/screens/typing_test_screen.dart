@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:thumbing/model/test_settings.dart';
 import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/utility/constants.dart';
 import 'package:thumbing/utility/words_generator.dart';
@@ -13,7 +14,8 @@ import 'package:thumbing/utility/wpm_calculator.dart';
 
 class TypingTestScreen extends StatefulWidget {
   static const kTypingScreenRoute = 'typing_screen';
-
+  TestSettings gameSetting;
+  TypingTestScreen([this.gameSetting]);
   @override
   _TypingTestScreenState createState() => _TypingTestScreenState();
 }
@@ -24,7 +26,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
   List<String> listOfUntypedStrings = [];
   List<String> listOfTypedStrings = [];
 
-  int seconds = 20;
+  int seconds = 0;
   int allTypedEntriesCount = 0;
   int uncorrectedErrorCount = 0;
   int correctlyTypedEntries = 0;
@@ -37,6 +39,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
 
   @override
   void initState() {
+    _setGameParameters();
     _getText();
     _initControllers();
     inputFocusNode = FocusNode();
@@ -47,6 +50,10 @@ class _TypingTestScreenState extends State<TypingTestScreen>
     });
 
     super.initState();
+  }
+
+  _setGameParameters(){
+    seconds = widget.gameSetting.testLength;
   }
 
   _getText() async {
