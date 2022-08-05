@@ -4,7 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 final kWPMChartTile = 'Y - WPM, X - Days';
 final kAccuracyChartTile = 'Y - Accuracy, X - Days';
-
+final kNormalTestDifficult = 1;
+final kLorenIpsumTestDifficulty = 10;
 //Colors
 final kVeryDarkPurple = const Color.fromRGBO(81, 45, 168, 1.0);
 final kBGColor = const Color(0xffB8FFF9);

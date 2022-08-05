@@ -85,15 +85,15 @@ class _TestSettingState extends State<TestSetting> {
                           title: RadioLabel(
                             labelText: 'Normal',
                           ),
-                          value: 1,
+                          value: kNormalTestDifficult,
                           groupValue: difficulty,
                           activeColor: kFABColor,
                           onChanged: (value) =>
                               setState(() => difficulty = value)),
                       RadioListTile(
-                          value: 10,
+                          value: kLorenIpsumTestDifficulty,
                           title: RadioLabel(
-                            labelText: 'Alien',
+                            labelText: 'Loren Ipsum',
                           ),
                           groupValue: difficulty,
                           activeColor: kFABColor,

@@ -89,6 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         backgroundColor: kBGColor,
         floatingActionButton: FloatingActionButton(
+          backgroundColor: kFABColor,
           onPressed: () =>
               Navigator.pushNamed(context, TestSetting.kTestSetting),
           child: Image.asset("assets/icons/letter-t-.png"),

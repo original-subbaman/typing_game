@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lorem_ipsum/lorem_ipsum.dart';
 import 'package:thumbing/model/test_settings.dart';
 import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/utility/constants.dart';
@@ -26,10 +27,11 @@ class _TypingTestScreenState extends State<TypingTestScreen>
   List<String> listOfUntypedStrings = [];
   List<String> listOfTypedStrings = [];
 
-  int seconds = 0;
+  int testLength = 0;
   int allTypedEntriesCount = 0;
   int uncorrectedErrorCount = 0;
   int correctlyTypedEntries = 0;
+  int testDifficulty = 1;
 
   AnimationController _animationController;
   CountdownController _countdownController;
@@ -44,7 +46,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
     _initControllers();
     inputFocusNode = FocusNode();
     inputFocusNode.addListener(() {
-      if (!inputFocusNode.hasFocus && seconds != 0) {
+      if (!inputFocusNode.hasFocus && testLength != 0) {
         FocusScope.of(context).requestFocus(inputFocusNode);
       }
     });
@@ -53,11 +55,20 @@ class _TypingTestScreenState extends State<TypingTestScreen>
   }
 
   _setGameParameters(){
-    seconds = widget.gameSetting.testLength;
+    testLength = widget.gameSetting.testLength;
+    testDifficulty = widget.gameSetting.difficulty;
   }
 
   _getText() async {
-    listOfUntypedStrings = RandomWordsGenerator.generateRandomWords();
+    RandomWordsGenerator wordsGenerator = RandomWordsGenerator();
+
+    if(testDifficulty == kNormalTestDifficult){
+      listOfUntypedStrings = wordsGenerator
+          .generateRandomStrings(wordsGenerator.generateRandomWords());
+    }else if(testDifficulty == kLorenIpsumTestDifficulty){
+      listOfUntypedStrings = wordsGenerator
+          .generateRandomStrings(wordsGenerator.generateLorenIpsum());
+    }
   }
 
   _initControllers() {
@@ -190,7 +201,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
       uncorrectedErrors: uncorrectedErrorCount,
       correctlyTypedEntries: correctlyTypedEntries,
       allTypedEntries: allTypedEntriesCount,
-      minutes: seconds / 60,
+      minutes: testLength / 60,
     );
 
     return wpmCalculator.getNetWPM().round();
@@ -201,7 +212,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
       uncorrectedErrors: uncorrectedErrorCount,
       correctlyTypedEntries: correctlyTypedEntries,
       allTypedEntries: allTypedEntriesCount,
-      minutes: seconds / 60,
+      minutes: testLength / 60,
     );
     return wpmCalculator.getAccuracy().round();
   }
@@ -238,7 +249,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Countdown(
-                        seconds: seconds,
+                        seconds: testLength,
                         build: (_, double time) => Text('Time: $time',
                             style: GoogleFonts.lato(
                               fontSize: 22,
