@@ -5,6 +5,7 @@ import 'package:thumbing/firebase/firebase_firestore.dart';
 import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/screens/sign_in.dart';
 import 'package:thumbing/firebase/firebase_authentication.dart';
+import 'package:thumbing/utility/current_best_score.dart';
 import 'package:thumbing/widgets/social_media_button.dart';
 import 'package:thumbing/widgets/input_form_field.dart';
 import 'package:thumbing/utility/constants.dart';
@@ -31,6 +32,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController _emailController;
   TextEditingController _fullNameController;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _emailFocusNode = FocusNode();
+    _passwordFocusNode = FocusNode();
+    _usernameFocusNode = FocusNode();
+    _fullNameFocusNode = FocusNode();
+    _userNameController = TextEditingController();
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+    _fullNameController = TextEditingController();
+
+  }
+
+
   Color getColorOnFocus(FocusNode focusNode) {
     return focusNode.hasFocus ? Colors.deepPurpleAccent : Colors.grey;
   }
@@ -48,6 +65,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<String> createNewUser() async{
+    CurrentBestScore.setBestWPM(0); //Setting initial best WPM for a new user in Shared Preferences
+    CurrentBestScore.setBestAcc(0); //Setting initial best Acc for a new user in Shared Preferences
     return  await MyCloudFirestore.addUser(
         uid: FirebaseAuth.instance.currentUser.uid,
         username: _userNameController.text.trim(),
@@ -85,28 +104,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _emailFocusNode = FocusNode();
-    _passwordFocusNode = FocusNode();
-    _usernameFocusNode = FocusNode();
-    _fullNameFocusNode = FocusNode();
-    _userNameController = TextEditingController();
-    _emailController = TextEditingController();
-    _passwordController = TextEditingController();
-    _fullNameController = TextEditingController();
 
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    disposeFocusNodes();
-    disposeControllers();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -314,6 +312,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _passwordController.dispose();
     _emailController.dispose();
     _fullNameController.dispose();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    disposeFocusNodes();
+    disposeControllers();
   }
 
 

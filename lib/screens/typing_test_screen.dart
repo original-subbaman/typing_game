@@ -1,17 +1,15 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lorem_ipsum/lorem_ipsum.dart';
+import 'package:thumbing/firebase/firebase_firestore.dart';
 import 'package:thumbing/model/test_settings.dart';
-import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/utility/constants.dart';
+import 'package:thumbing/utility/current_best_score.dart';
 import 'package:thumbing/utility/words_generator.dart';
+import 'package:thumbing/utility/wpm_calculator.dart';
 import 'package:thumbing/widgets/circular_score_widget.dart';
-import 'package:thumbing/utility/file_reader.dart';
 import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
-import 'package:thumbing/utility/wpm_calculator.dart';
 
 class TypingTestScreen extends StatefulWidget {
   static const kTypingScreenRoute = 'typing_screen';
@@ -61,7 +59,6 @@ class _TypingTestScreenState extends State<TypingTestScreen>
 
   _getText() async {
     RandomWordsGenerator wordsGenerator = RandomWordsGenerator();
-
     if(testDifficulty == kNormalTestDifficult){
       listOfUntypedStrings = wordsGenerator
           .generateRandomStrings(wordsGenerator.generateRandomWords());
@@ -121,20 +118,27 @@ class _TypingTestScreenState extends State<TypingTestScreen>
     listOfTypedStrings.clear();
   }
 
-  _createCupertinoDialog() {
-    return CupertinoAlertDialog(
-      title: Text('Well Done!'),
-      content: Column(children: [
-        Text('WPM: 87'),
-        Text('Accuracy: 98%'),
-      ]),
-      actions: [
-        CupertinoDialogAction(
-          child: Text('Done'),
-        )
-      ],
+  int _calculateWPM() {
+    WPMCalculator wpmCalculator = WPMCalculator(
+      uncorrectedErrors: uncorrectedErrorCount,
+      correctlyTypedEntries: correctlyTypedEntries,
+      allTypedEntries: allTypedEntriesCount,
+      minutes: testLength / 60,
     );
+
+    return wpmCalculator.getNetWPM().round();
   }
+
+  int _calculateAccuracy() {
+    WPMCalculator wpmCalculator = WPMCalculator(
+      uncorrectedErrors: uncorrectedErrorCount,
+      correctlyTypedEntries: correctlyTypedEntries,
+      allTypedEntries: allTypedEntriesCount,
+      minutes: testLength / 60,
+    );
+    return wpmCalculator.getAccuracy().round();
+  }
+
 
   _createTestScoreAlertDialog({int acc, int wpm}) {
     return AlertDialog(
@@ -176,11 +180,34 @@ class _TypingTestScreenState extends State<TypingTestScreen>
         TextButton(
           child: Text('Done', style: kAlertDialogTextButtonStyle),
           onPressed: () {
+            _updateBestScore(acc: acc, wpm: wpm);
             Navigator.popUntil(context, (route) => route.isFirst);
           },
         )
       ],
       elevation: 24.0,
+    );
+  }
+
+  _updateBestScore({int acc, int wpm}){
+    CurrentBestScore.updateBestAcc(acc); //Setting best accuracy score locally
+    CurrentBestScore.updateBestWPM(wpm); //Setting best wpm score locally
+
+    MyCloudFirestore.updateUserBestScore(acc: acc, wpm: wpm); //Setting best user score on Firestore
+  }
+
+  _createCupertinoDialog() {
+    return CupertinoAlertDialog(
+      title: Text('Well Done!'),
+      content: Column(children: [
+        Text('WPM: 87'),
+        Text('Accuracy: 98%'),
+      ]),
+      actions: [
+        CupertinoDialogAction(
+          child: Text('Done'),
+        )
+      ],
     );
   }
 
@@ -196,26 +223,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
             ],
           ));
 
-  int _calculateWPM() {
-    WPMCalculator wpmCalculator = WPMCalculator(
-      uncorrectedErrors: uncorrectedErrorCount,
-      correctlyTypedEntries: correctlyTypedEntries,
-      allTypedEntries: allTypedEntriesCount,
-      minutes: testLength / 60,
-    );
 
-    return wpmCalculator.getNetWPM().round();
-  }
-
-  int _calculateAccuracy() {
-    WPMCalculator wpmCalculator = WPMCalculator(
-      uncorrectedErrors: uncorrectedErrorCount,
-      correctlyTypedEntries: correctlyTypedEntries,
-      allTypedEntries: allTypedEntriesCount,
-      minutes: testLength / 60,
-    );
-    return wpmCalculator.getAccuracy().round();
-  }
 
   @override
   Widget build(BuildContext context) {
