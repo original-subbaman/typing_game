@@ -1,10 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:thumbing/firebase/firebase_authentication.dart';
 import 'package:thumbing/firebase/firebase_constants.dart';
-import 'package:thumbing/screens/league_screen.dart';
 
 import '../model/league.dart';
 
@@ -65,17 +62,49 @@ class MyCloudFirestore {
       league,
     );
   }
-
-  static updateUserBestScore({int acc, int wpm}){
+  static getBestScore() async {
+    final user = _users.doc(MyFirebaseAuth.currentUserId);
+    final score = [0, 0]; //0 index = accuracy, 1 index = wpm
+    await user.get().then((snapshot){
+      if(snapshot.exists){
+        Map data = snapshot.data();
+        score[0] = data['acc'];
+        score[1] = data['wpm'];
+      }
+    });
+    return score;
+  }
+  static updateUserBestScore({int acc, int wpm}) async {
       final user = _users.doc(MyFirebaseAuth.currentUserId);
-      user.update(
-        {
-          "acc": acc,
-          "wpm": wpm,
+      final bestScore = await getBestScore();
+
+      if(acc > bestScore[0]){
+        if(wpm > bestScore[1]){
+          user.update(
+              {
+                "acc": acc,
+                "wpm": wpm,
+              }
+          ).then(
+                (value) => print("User best score updated!"),
+            onError: (e) => print("Error updating score!"),
+          );
+        }else{
+          user.update({
+            "acc": acc,
+          }).then(
+              (value) => print("User best accuracy updated"),
+            onError: (e) => print("Error updating acc"),
+          );
         }
-      ).then(
-          (value) => print("User best score updated!"),
-          onError: (e) => print("Error updating score!"),
-      );
+      }else if(wpm > bestScore[1]){
+        user.update({
+          "wpm": wpm,
+        }).then(
+            (value) => print("User best wpm updated"),
+          onError: (e) => print("Error updating wpm"),
+        );
+      }
+
   }
 }

@@ -3,18 +3,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:thumbing/firebase/firebase_constants.dart';
+import 'package:thumbing/firebase/firebase_firestore.dart';
 import 'package:thumbing/model/leaderboard_item.dart';
 import 'package:thumbing/screens/profile_page.dart';
 import 'package:thumbing/screens/test_settings.dart';
-import 'package:thumbing/screens/typing_test_screen.dart';
-import 'package:thumbing/utility/action_button_icon_icons.dart';
 import 'package:thumbing/utility/constants.dart';
 import 'package:thumbing/utility/current_best_score.dart';
-import 'package:thumbing/widgets/expandable_fab.dart';
 import 'package:thumbing/widgets/leaderboard.dart';
 import 'package:thumbing/widgets/single_value_card.dart';
 import 'package:thumbing/widgets/value_display_card.dart';
+
+import '../firebase/firebase_constants.dart';
 
 class HomeScreen extends StatefulWidget {
   static const kHomeRoute = 'home';
@@ -26,8 +25,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final String avgWPMText = 'Avg WPM';
   final String avgAccText = 'Avg Accuracy';
-  String wpmValueText = '120';
-  String accValueText = '100';
+  int wpmValueText = 0;
+  int accValueText = 0;
   String bestWPM = '72';
   String bestAcc = '99';
   String userName;
@@ -47,24 +46,38 @@ class _HomeScreenState extends State<HomeScreen> {
     }).catchError((error) => print('error: $error'));
   }
 
+  getLatestWPM() async{
+    return await CurrentBestScore.getLatestWPM();
+  }
+
+  getLatestAcc() async{
+    return await CurrentBestScore.getLatestAcc();
+  }
   @override
   void initState() {
     super.initState();
     getUserNameFromFirestore();
+
+
   }
 
   @override
   Widget build(BuildContext context) {
+    print('build state');
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15.0), bottomRight: Radius.circular(15.0))
+          ),
           iconTheme: IconThemeData(color: kFABColor),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
+          elevation: 5,
+          backgroundColor: kLightBlueAccent,
           title: Text(
             "Hello $userName",
             style: GoogleFonts.lato(
-              color: Colors.lightBlue,
+              color: Colors.white,
               fontSize: 25,
               fontWeight: FontWeight.bold,
             ),
@@ -74,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () => Navigator.pushNamed(
                   context, ProfilePageScreen.kProfilePageScreen),
               child: Container(
-                margin: EdgeInsets.only(right: 8.0, top: 8.0),
+                margin: EdgeInsets.only(right: 8.0, top: 6.0),
                 child: Hero(
                   tag: 'profile_hero',
                   child: Center(
@@ -92,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
         floatingActionButton: FloatingActionButton(
           backgroundColor: kFABColor,
           onPressed: () =>
-              Navigator.pushNamed(context, TestSetting.kTestSetting),
+              Navigator.popAndPushNamed(context, TestSetting.kTestSetting),
           child: Image.asset("assets/icons/letter-t-.png"),
         ),
         body: Padding(
@@ -106,17 +119,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Flexible(
                     flex: 1,
-                    child: ValueDisplayCard(
-                      titleText: avgWPMText,
-                      valueText: wpmValueText,
-                      titleTxtStyle: kCardTextStyle.copyWith(
-                        fontSize: 20,
-                        color: Colors.white,
-                      ),
-                      valueTxtStyle: kCardTextStyle.copyWith(
-                        fontSize: 60,
-                        color: Colors.white,
-                      ),
+                    child: FutureBuilder(
+                      future: getLatestWPM(),
+                      builder:(context, snapshot) {
+                        var displayCard = ValueDisplayCard(
+                          titleText: avgWPMText,
+                          valueText: '0',
+                          titleTxtStyle: kCardTextStyle.copyWith(
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                          valueTxtStyle: kCardTextStyle.copyWith(
+                            fontSize: 60,
+                            color: Colors.white,
+                          ),
+                        );
+                        if(snapshot.hasData){
+                          displayCard.valueText = snapshot.data.toString();
+                        }
+                        return displayCard;
+                      }
                     ),
                   ),
                   SizedBox(
@@ -124,17 +146,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Flexible(
                     flex: 1,
-                    child: ValueDisplayCard(
-                      titleText: avgAccText,
-                      valueText: accValueText,
-                      bgColor: Colors.white,
-                      titleTxtStyle: kCardTextStyle.copyWith(
-                          fontSize: 20, color: Colors.lightBlue),
-                      valueTxtStyle: kCardTextStyle.copyWith(
-                        fontSize: 60,
-                        color: Colors.lightBlue,
-                      ),
-                    ),
+                    child: FutureBuilder(
+                        future: getLatestAcc(),
+                        builder:(context, snapshot) {
+                          var displayCard = ValueDisplayCard(
+                            titleText: avgAccText,
+                            valueText: accValueText.toString(),
+                            bgColor: Colors.white,
+                            titleTxtStyle: kCardTextStyle.copyWith(
+                                fontSize: 20, color: Colors.lightBlue),
+                            valueTxtStyle: kCardTextStyle.copyWith(
+                              fontSize: 60,
+                              color: Colors.lightBlue,
+                            ),
+                          );
+                          if(snapshot.hasData){
+                            displayCard.valueText = snapshot.data.toString();
+                          }
+                          return displayCard;
+                        }
+                    )
                   ),
                 ],
               ),

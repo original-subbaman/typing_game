@@ -5,7 +5,7 @@ import 'package:thumbing/utility/constants.dart';
 
 class ValueDisplayCard extends StatelessWidget {
   final String titleText;
-  final String valueText;
+  String valueText;
   final Color bgColor;
   final titleTxtStyle;
   final valueTxtStyle;

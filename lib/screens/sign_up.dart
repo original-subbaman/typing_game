@@ -65,8 +65,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<String> createNewUser() async{
-    CurrentBestScore.setBestWPM(0); //Setting initial best WPM for a new user in Shared Preferences
-    CurrentBestScore.setBestAcc(0); //Setting initial best Acc for a new user in Shared Preferences
+    CurrentBestScore.setLatestWPM(0); //Setting initial best WPM for a new user in Shared Preferences
+    CurrentBestScore.setLatestAcc(0); //Setting initial best Acc for a new user in Shared Preferences
     return  await MyCloudFirestore.addUser(
         uid: FirebaseAuth.instance.currentUser.uid,
         username: _userNameController.text.trim(),

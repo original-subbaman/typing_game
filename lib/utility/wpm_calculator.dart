@@ -1,14 +1,17 @@
 import 'dart:core';
 
-class WPMCalculator{
+class TypingStatCalculator{
 
   int uncorrectedErrors = 0;
   double minutes = 0;
   int allTypedEntries = 0;
   int correctlyTypedEntries = 0;
+  int totalCharacters = 0;
 
-  WPMCalculator({this.uncorrectedErrors,
+  TypingStatCalculator.wpmCalculator({this.uncorrectedErrors,
     this.correctlyTypedEntries, this.allTypedEntries, this.minutes});
+
+  TypingStatCalculator.accCalculator({this.correctlyTypedEntries, this.totalCharacters});
 
   double _calculateGrossWPM(){
     return ((allTypedEntries/5)/minutes);
@@ -19,7 +22,7 @@ class WPMCalculator{
   }
 
   double getAccuracy(){
-    return (correctlyTypedEntries/allTypedEntries) * 100;
+    return (correctlyTypedEntries/totalCharacters) * 100;
   }
 
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:thumbing/firebase/firebase_firestore.dart';
 import 'package:thumbing/model/test_settings.dart';
+import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/utility/constants.dart';
 import 'package:thumbing/utility/current_best_score.dart';
 import 'package:thumbing/utility/words_generator.dart';
@@ -26,9 +27,10 @@ class _TypingTestScreenState extends State<TypingTestScreen>
   List<String> listOfTypedStrings = [];
 
   int testLength = 0;
-  int allTypedEntriesCount = 0;
+  int allUserTypedEntriesCount = 0;
   int uncorrectedErrorCount = 0;
   int correctlyTypedEntries = 0;
+  int totalCharacters = 0;
   int testDifficulty = 1;
 
   AnimationController _animationController;
@@ -39,8 +41,9 @@ class _TypingTestScreenState extends State<TypingTestScreen>
 
   @override
   void initState() {
+    super.initState();
     _setGameParameters();
-    _getText();
+    _generateText();
     _initControllers();
     inputFocusNode = FocusNode();
     inputFocusNode.addListener(() {
@@ -48,8 +51,6 @@ class _TypingTestScreenState extends State<TypingTestScreen>
         FocusScope.of(context).requestFocus(inputFocusNode);
       }
     });
-
-    super.initState();
   }
 
   _setGameParameters(){
@@ -57,7 +58,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
     testDifficulty = widget.gameSetting.difficulty;
   }
 
-  _getText() async {
+  _generateText() async {
     RandomWordsGenerator wordsGenerator = RandomWordsGenerator();
     if(testDifficulty == kNormalTestDifficult){
       listOfUntypedStrings = wordsGenerator
@@ -79,18 +80,29 @@ class _TypingTestScreenState extends State<TypingTestScreen>
     return isButtonDisabled ? Colors.grey[500] : Colors.white;
   }
 
-  ///Looping through characters typed by the player(var userTyped) and the original string (var original String)
-  ///and checking character for character if the strings match. For each character that matches at the correct pos.
-  ///increase correctlyTypedEntries by 1 and for every incorrectly typed character increase uncorrectedErrorCount by 1.
-  _calculateTypingStat(String userTyped, String originalString) {
-    for (var i = 0; i < originalString.length; i++) {
-      if (i >= userTyped.length) return;
-      if (userTyped.substring(i, i + 1) == originalString.substring(i, i + 1)) {
-        correctlyTypedEntries++;
-      } else {
-        uncorrectedErrorCount++;
-      }
-    }
+  _onPressedPlayButton(){
+    return isButtonDisabled
+        ? null
+        : () {
+      setState(() {
+        if (isPlay) {
+          _countdownController.onPause();
+        } else {
+          _countdownController.onResume();
+        }
+        isPlay = !isPlay;
+      });
+    };
+  }
+
+  _onPressedRefreshButton(){
+    return isButtonDisabled
+        ? null
+        : () {
+      setState(() {
+        _resetTypingTest();
+      });
+    };
   }
 
   _pauseTest() {
@@ -114,15 +126,18 @@ class _TypingTestScreenState extends State<TypingTestScreen>
   }
 
   _resetList() {
-    listOfUntypedStrings.insertAll(0, listOfTypedStrings);
-    listOfTypedStrings.clear();
+    //listOfUntypedStrings.insertAll(0, listOfTypedStrings);
+    setState(() {
+      _generateText();
+      listOfTypedStrings.clear();
+    });
   }
 
   int _calculateWPM() {
-    WPMCalculator wpmCalculator = WPMCalculator(
+    TypingStatCalculator wpmCalculator = TypingStatCalculator.wpmCalculator(
       uncorrectedErrors: uncorrectedErrorCount,
       correctlyTypedEntries: correctlyTypedEntries,
-      allTypedEntries: allTypedEntriesCount,
+      allTypedEntries: allUserTypedEntriesCount,
       minutes: testLength / 60,
     );
 
@@ -130,15 +145,26 @@ class _TypingTestScreenState extends State<TypingTestScreen>
   }
 
   int _calculateAccuracy() {
-    WPMCalculator wpmCalculator = WPMCalculator(
-      uncorrectedErrors: uncorrectedErrorCount,
+    TypingStatCalculator wpmCalculator = TypingStatCalculator.accCalculator(
       correctlyTypedEntries: correctlyTypedEntries,
-      allTypedEntries: allTypedEntriesCount,
-      minutes: testLength / 60,
+      totalCharacters: totalCharacters,
     );
     return wpmCalculator.getAccuracy().round();
   }
 
+  ///Looping through characters typed by the player(var userTyped) and the original string (var original String)
+  ///and checking character for character if the strings match. For each character that matches at the correct pos.
+  ///increase correctlyTypedEntries by 1 and for every incorrectly typed character increase uncorrectedErrorCount by 1.
+  _calculateTypingStat(String userTyped, String originalString) {
+    for (var i = 0; i < originalString.length; i++) {
+      if (i >= userTyped.length) return;
+      if (userTyped.substring(i, i + 1) == originalString.substring(i, i + 1)) {
+        correctlyTypedEntries++;
+      } else {
+        uncorrectedErrorCount++;
+      }
+    }
+  }
 
   _createTestScoreAlertDialog({int acc, int wpm}) {
     return AlertDialog(
@@ -181,7 +207,9 @@ class _TypingTestScreenState extends State<TypingTestScreen>
           child: Text('Done', style: kAlertDialogTextButtonStyle),
           onPressed: () {
             _updateBestScore(acc: acc, wpm: wpm);
-            Navigator.popUntil(context, (route) => route.isFirst);
+            _updateLatestScore(acc: acc, wpm: wpm);
+            Navigator.pop(context);
+            Navigator.popAndPushNamed(context, HomeScreen.kHomeRoute);
           },
         )
       ],
@@ -190,12 +218,13 @@ class _TypingTestScreenState extends State<TypingTestScreen>
   }
 
   _updateBestScore({int acc, int wpm}){
-    CurrentBestScore.updateBestAcc(acc); //Setting best accuracy score locally
-    CurrentBestScore.updateBestWPM(wpm); //Setting best wpm score locally
-
     MyCloudFirestore.updateUserBestScore(acc: acc, wpm: wpm); //Setting best user score on Firestore
   }
 
+  _updateLatestScore({int acc, int wpm}){
+    CurrentBestScore.setLatestAcc(acc); //Saving latest accuracy score locally
+    CurrentBestScore.setLatestWPM(wpm); //Saving latest wpm score locally
+  }
   _createCupertinoDialog() {
     return CupertinoAlertDialog(
       title: Text('Well Done!'),
@@ -265,7 +294,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
                               color: Colors.white,
                             )),
                         onFinished: () {
-                          FocusScope.of(context).unfocus();
+                          FocusManager.instance.primaryFocus.unfocus();
                           showDialog(
                             context: context,
                             builder: (_) =>
@@ -287,19 +316,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
                             : Icon(Icons.play_arrow,
                                 color: _setIconButtonColor()),
                         iconSize: 25,
-                        onPressed: isButtonDisabled
-                            ? null
-                            : () {
-                                setState(() {
-                                  if (isPlay) {
-                                    _countdownController.onPause();
-                                  } else {
-                                    _countdownController.onResume();
-                                  }
-
-                                  isPlay = !isPlay;
-                                });
-                              },
+                        onPressed: _onPressedPlayButton,
                       ),
                       //Refresh Button
                       IconButton(
@@ -308,13 +325,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
                           color: _setIconButtonColor(),
                         ),
                         iconSize: 25,
-                        onPressed: isButtonDisabled
-                            ? null
-                            : () {
-                                setState(() {
-                                  _resetTypingTest();
-                                });
-                              },
+                        onPressed: _onPressedRefreshButton,
                       )
                     ],
                   ),
@@ -389,7 +400,8 @@ class _TypingTestScreenState extends State<TypingTestScreen>
                             controller: _textEditingController,
                             onSubmitted: (value) {
                               if (value.isEmpty) return;
-                              allTypedEntriesCount += value.length;
+                              allUserTypedEntriesCount += value.length;
+                              totalCharacters += listOfUntypedStrings[0].length;
                               _calculateTypingStat(
                                   value, listOfUntypedStrings[0]);
                               listOfTypedStrings

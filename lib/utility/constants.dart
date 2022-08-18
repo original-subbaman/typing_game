@@ -8,7 +8,7 @@ final kNormalTestDifficult = 1;
 final kLorenIpsumTestDifficulty = 10;
 //Colors
 final kVeryDarkPurple = const Color.fromRGBO(81, 45, 168, 1.0);
-final kBGColor = const Color(0xffB8FFF9);
+final kBGColor = const Color(0xffFFFFFF);
 final kLightBlueAccent = const Color(0xff47B5FF);
 final kFABColor = const Color(0xffF94C66);
 
