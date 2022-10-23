@@ -53,6 +53,10 @@ class _HomeScreenState extends State<HomeScreen> {
   getLatestAcc() async{
     return await CurrentBestScore.getLatestAcc();
   }
+
+  getLeaderboardStats() async {
+
+  }
   @override
   void initState() {
     super.initState();
@@ -177,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 15.0,
               ),
               Expanded(
-                child: Leaderboard(items, true, BorderRadius.circular(20)),
+                child: Leaderboard([], true, BorderRadius.circular(20)),
               ),
             ],
           ),
@@ -187,40 +191,40 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-List<LeaderboardItem> items = [
-  LeaderboardItem(
-      userImage: AssetImage('assets/images/gojo.jpg'),
-      userName: 'Satoru Gojo',
-      rank: '1',
-      upDownIcon: kRankUpIcon),
-  LeaderboardItem(
-      userImage: AssetImage('assets/images/saitama.jpg'),
-      userName: 'Saitama',
-      rank: '2',
-      upDownIcon: kRankUpIcon),
-  LeaderboardItem(
-      userImage: AssetImage('assets/images/saitama.jpg'),
-      userName: 'Escanor',
-      rank: '3',
-      upDownIcon: kRankDownIcon),
-  LeaderboardItem(
-      userImage: AssetImage('assets/images/saitama.jpg'),
-      userName: 'Madara Uchiha',
-      rank: '4',
-      upDownIcon: kRankUpIcon),
-  LeaderboardItem(
-      userImage: AssetImage('assets/images/saitama.jpg'),
-      userName: 'Son Goku',
-      rank: '5',
-      upDownIcon: kRankDownIcon),
-  LeaderboardItem(
-      userImage: AssetImage('assets/images/gojo.jpg'),
-      userName: 'Satoru Gojo',
-      rank: '1',
-      upDownIcon: kRankUpIcon),
-  LeaderboardItem(
-      userImage: AssetImage('assets/images/gojo.jpg'),
-      userName: 'Satoru Gojo',
-      rank: '1',
-      upDownIcon: kRankUpIcon),
-];
+// List<LeaderboardItem> items = [
+//   LeaderboardItem(
+//       userImage: AssetImage('assets/images/gojo.jpg'),
+//       userName: 'Satoru Gojo',
+//       rank: '1',
+//       upDownIcon: kRankUpIcon),
+//   LeaderboardItem(
+//       userImage: AssetImage('assets/images/saitama.jpg'),
+//       userName: 'Saitama',
+//       rank: '2',
+//       upDownIcon: kRankUpIcon),
+//   LeaderboardItem(
+//       userImage: AssetImage('assets/images/saitama.jpg'),
+//       userName: 'Escanor',
+//       rank: '3',
+//       upDownIcon: kRankDownIcon),
+//   LeaderboardItem(
+//       userImage: AssetImage('assets/images/saitama.jpg'),
+//       userName: 'Madara Uchiha',
+//       rank: '4',
+//       upDownIcon: kRankUpIcon),
+//   LeaderboardItem(
+//       userImage: AssetImage('assets/images/saitama.jpg'),
+//       userName: 'Son Goku',
+//       rank: '5',
+//       upDownIcon: kRankDownIcon),
+//   LeaderboardItem(
+//       userImage: AssetImage('assets/images/gojo.jpg'),
+//       userName: 'Satoru Gojo',
+//       rank: '1',
+//       upDownIcon: kRankUpIcon),
+//   LeaderboardItem(
+//       userImage: AssetImage('assets/images/gojo.jpg'),
+//       userName: 'Satoru Gojo',
+//       rank: '1',
+//       upDownIcon: kRankUpIcon),
+// ];

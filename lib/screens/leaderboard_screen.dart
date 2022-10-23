@@ -44,43 +44,6 @@ class OvalDisplayCard extends StatelessWidget{
 }
 
 class _LeaderboardScreenState extends State<LeaderboardScreen> {
-  List<LeaderboardItem> items = [
-    LeaderboardItem(
-        userImage: AssetImage('assets/images/gojo.jpg'),
-        userName: 'Satoru Gojo',
-        rank: '1',
-        upDownIcon: kRankUpIcon),
-    LeaderboardItem(
-        userImage: AssetImage('assets/images/saitama.jpg'),
-        userName: 'Saitama',
-        rank: '2',
-        upDownIcon: kRankUpIcon),
-    LeaderboardItem(
-        userImage: AssetImage('assets/images/saitama.jpg'),
-        userName: 'Escanor',
-        rank: '3',
-        upDownIcon: kRankDownIcon),
-    LeaderboardItem(
-        userImage: AssetImage('assets/images/saitama.jpg'),
-        userName: 'Madara Uchiha',
-        rank: '4',
-        upDownIcon: kRankUpIcon),
-    LeaderboardItem(
-        userImage: AssetImage('assets/images/saitama.jpg'),
-        userName: 'Son Goku',
-        rank: '5',
-        upDownIcon: kRankDownIcon),
-    LeaderboardItem(
-        userImage: AssetImage('assets/images/gojo.jpg'),
-        userName: 'Satoru Gojo',
-        rank: '1',
-        upDownIcon: kRankUpIcon),
-    LeaderboardItem(
-        userImage: AssetImage('assets/images/gojo.jpg'),
-        userName: 'Satoru Gojo',
-        rank: '1',
-        upDownIcon: kRankUpIcon),
-  ];
   String dropDownValue = "League 1";
   List<String> leagues = ['League 1', 'League 2', 'League 3', 'League 4', 'League 5'];
   @override
@@ -171,7 +134,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
             SizedBox(height: 10.0,),
             Expanded(child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Leaderboard(items, false, BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+              child: Leaderboard([], false, BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
             )),
           ],
         ),

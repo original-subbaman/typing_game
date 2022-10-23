@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:thumbing/firebase/firebase_authentication.dart';
 import 'package:thumbing/firebase/firebase_constants.dart';
+import 'package:thumbing/model/leaderboard_item.dart';
+import 'package:thumbing/model/user.dart';
 
 import '../model/league.dart';
 
@@ -33,13 +34,14 @@ class MyCloudFirestore {
       int acc = 0,
       int wpm = 0}) async {
     String status;
-    User user = await _users.doc(uid).set({
-      'uid': uid,
-      'user_name': username,
-      'full_name': fullName,
-      'email': email,
-      'acc': acc,
-      'wpm': wpm,
+    await _users.doc(uid).set({
+      UserProperties.UID: uid,
+      UserProperties.USER_NAME: username,
+      UserProperties.FULL_NAME: fullName,
+      UserProperties.EMAIL: email,
+      UserProperties.ACC: acc,
+      UserProperties.WPM: wpm,
+      UserProperties.LEAGUE_SCORE: 0,
     }).then((value) {
       print('User Added');
       status = "success";
@@ -82,8 +84,8 @@ class MyCloudFirestore {
         if(wpm > bestScore[1]){
           user.update(
               {
-                "acc": acc,
-                "wpm": wpm,
+                UserProperties.ACC: acc,
+                UserProperties.WPM: wpm,
               }
           ).then(
                 (value) => print("User best score updated!"),
@@ -91,7 +93,7 @@ class MyCloudFirestore {
           );
         }else{
           user.update({
-            "acc": acc,
+            UserProperties.ACC: acc,
           }).then(
               (value) => print("User best accuracy updated"),
             onError: (e) => print("Error updating acc"),
@@ -99,12 +101,44 @@ class MyCloudFirestore {
         }
       }else if(wpm > bestScore[1]){
         user.update({
-          "wpm": wpm,
+          UserProperties.WPM: wpm,
         }).then(
             (value) => print("User best wpm updated"),
           onError: (e) => print("Error updating wpm"),
         );
       }
+
+  }
+
+  static updateLeagueScore({int leagueScore}) async {
+    final user = _users.doc(MyFirebaseAuth.currentUserId);
+    await user.get().then((snapshot){
+      if(snapshot.exists){
+        final Map data = snapshot.data();
+        if(leagueScore > data['league_score']){
+          user.update({"league_score": leagueScore}).then(
+              (value) => print("User league score updated"),
+            onError: (e) => print("Error updating league score"),
+          );
+        }
+      }
+    });
+  }
+
+  static getLeaderboard() async{
+    final topTenPlayersList = [];
+    int rank = 1;
+    db.collection(kLeagueCollection)
+        .orderBy("league_score", descending: true)
+        .limit(10).get().then((snapshot) => {
+          snapshot.docs.forEach((doc) {
+            final player = doc.data();
+            topTenPlayersList.add(new LeaderboardItem(userName: player[LEAGUE_SCORE], leagueScore: player[LEAGUE_SCORE], rank: rank));
+            rank++;
+         })
+    });
+
+    return topTenPlayersList;
 
   }
 }
