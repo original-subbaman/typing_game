@@ -6,9 +6,9 @@ class League{
   String adminId;
   String adminName;
 
-  League({this.adminId, this.adminName, this.leagueTitle, this.joinCondition, this.players, this.noOfPlayers = 0});
+  League({required this.adminId, required this.adminName, required this.leagueTitle, required this.joinCondition, required this.players, this.noOfPlayers = 0});
 
-  League.fromJson(Map<String, Object> json)
+  League.fromJson(Map<String, dynamic> json)
       : this(
     adminName: json['adminName'] as String,
     adminId: json['adminId'] as String,

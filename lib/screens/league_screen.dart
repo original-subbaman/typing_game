@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+/*import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:thumbing/firebase/firebase_constants.dart';
 import 'package:thumbing/firebase/firebase_firestore.dart';
@@ -72,7 +72,7 @@ class _LeagueScreenState extends State<LeagueScreen> {
                   return ListView(
                     shrinkWrap: true,
                     children:
-                        snapshot.data.docs.map((DocumentSnapshot document) {
+                        snapshot.data?.docs.map((DocumentSnapshot document) {
                       Map<String, dynamic> data =
                           document.data() as Map<String, dynamic>;
                       String joinCondition =
@@ -135,3 +135,4 @@ class _LeagueScreenState extends State<LeagueScreen> {
                 })));
   }
 }
+*/

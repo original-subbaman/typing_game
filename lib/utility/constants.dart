@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
+
+
+
 final kWPMChartTile = 'Y - WPM, X - Days';
 final kAccuracyChartTile = 'Y - Accuracy, X - Days';
 final kNormalTestDifficult = 1;
@@ -46,7 +49,7 @@ final kCircleAvatar = CircleAvatar(
   )
 );
 
-void showSnackBar({String msg, BuildContext context}){
+void showSnackBar({required String msg, required BuildContext context}){
   ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(msg))
   );

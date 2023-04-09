@@ -14,15 +14,15 @@ import 'package:timer_count_down/timer_count_down.dart';
 
 class TypingTestScreen extends StatefulWidget {
   static const kTypingScreenRoute = 'typing_screen';
-  TestSettings gameSetting;
-  TypingTestScreen([this.gameSetting]);
+  TestSettings gameSetting = TestSettings();
+  TypingTestScreen(this.gameSetting);
   @override
   _TypingTestScreenState createState() => _TypingTestScreenState();
 }
 
 class _TypingTestScreenState extends State<TypingTestScreen>
     with TickerProviderStateMixin {
-  FocusNode inputFocusNode;
+  late FocusNode inputFocusNode;
   List<String> listOfUntypedStrings = [];
   List<String> listOfTypedStrings = [];
 
@@ -33,8 +33,8 @@ class _TypingTestScreenState extends State<TypingTestScreen>
   int totalCharacters = 0;
   int testDifficulty = 1;
 
-  AnimationController _animationController;
-  CountdownController _countdownController;
+  late AnimationController _animationController;
+  late CountdownController _countdownController;
   var _textEditingController;
   bool isPlay = true;
   bool isButtonDisabled = true;
@@ -86,9 +86,9 @@ class _TypingTestScreenState extends State<TypingTestScreen>
         : () {
       setState(() {
         if (isPlay) {
-          _countdownController.onPause();
+          _countdownController.onPause!();
         } else {
-          _countdownController.onResume();
+          _countdownController.onResume!();
         }
         isPlay = !isPlay;
       });
@@ -166,7 +166,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
     }
   }
 
-  _createTestScoreAlertDialog({int acc, int wpm}) {
+  _createTestScoreAlertDialog({required int acc, required int wpm}) {
     return AlertDialog(
       backgroundColor: Colors.deepPurple,
       title: Text(
@@ -217,12 +217,14 @@ class _TypingTestScreenState extends State<TypingTestScreen>
     );
   }
 
-  _updateBestScore({int acc, int wpm}){
+  _updateBestScore({required int acc, required int wpm}){
     MyCloudFirestore.updateUserBestScore(acc: acc, wpm: wpm); //Setting best user score on Firestore
-    MyCloudFirestore.updateLeagueScore(leagueScore: acc + wpm);
+    int leagueScore = acc + wpm;
+    MyCloudFirestore.updateLeagueScoreInUsers(leagueScore: leagueScore);
+    MyCloudFirestore.updateLeagueScoreInLeagueTable(leagueScore: leagueScore);
   }
 
-  _updateLatestScore({int acc, int wpm}){
+  _updateLatestScore({required int acc, required int wpm}){
     CurrentBestScore.setLatestAcc(acc); //Saving latest accuracy score locally
     CurrentBestScore.setLatestWPM(wpm); //Saving latest wpm score locally
   }
@@ -241,7 +243,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
     );
   }
 
-  Future<bool> _showWarning() async => showDialog(
+  Future<Future> _showWarning() async => showDialog(
       context: context,
       builder: (context) => AlertDialog(
             title: Text('Do you want to exit the test?'),
@@ -260,11 +262,11 @@ class _TypingTestScreenState extends State<TypingTestScreen>
     return WillPopScope(
       onWillPop: () async {
         _pauseTest();
-        final shouldPop = await _showWarning();
+        final shouldPop = await _showWarning() as bool;
         if(!shouldPop){
           _resumeTest();
         }
-        return shouldPop ?? false;
+        return shouldPop;
       },
       child: Scaffold(
         resizeToAvoidBottomInset: true,
@@ -295,7 +297,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
                               color: Colors.white,
                             )),
                         onFinished: () {
-                          FocusManager.instance.primaryFocus.unfocus();
+                          FocusManager.instance.primaryFocus?.unfocus();
                           showDialog(
                             context: context,
                             builder: (_) =>

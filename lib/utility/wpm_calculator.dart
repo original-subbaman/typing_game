@@ -8,10 +8,10 @@ class TypingStatCalculator{
   int correctlyTypedEntries = 0;
   int totalCharacters = 0;
 
-  TypingStatCalculator.wpmCalculator({this.uncorrectedErrors,
-    this.correctlyTypedEntries, this.allTypedEntries, this.minutes});
+  TypingStatCalculator.wpmCalculator({required this.uncorrectedErrors,
+    required this.correctlyTypedEntries, required this.allTypedEntries, required this.minutes});
 
-  TypingStatCalculator.accCalculator({this.correctlyTypedEntries, this.totalCharacters});
+  TypingStatCalculator.accCalculator({required this.correctlyTypedEntries, required this.totalCharacters});
 
   double _calculateGrossWPM(){
     return ((allTypedEntries/5)/minutes);

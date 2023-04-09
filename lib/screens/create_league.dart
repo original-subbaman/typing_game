@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+/*import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:thumbing/firebase/firebase_authentication.dart';
 import 'package:thumbing/firebase/firebase_firestore.dart';
@@ -18,8 +18,8 @@ class CreateNewLeagueScreen extends StatefulWidget {
 enum JoiningChoice { invite_only, open }
 
 class _CreateNewLeagueScreen extends State<CreateNewLeagueScreen> {
-  FocusNode _leagueNameFocusNode;
-  TextEditingController _leagueNameController;
+  late FocusNode _leagueNameFocusNode;
+  late TextEditingController _leagueNameController;
 
   Color getColorOnFocus(FocusNode focusNode) {
     return focusNode.hasFocus ? Colors.deepPurpleAccent : Colors.grey;
@@ -39,7 +39,7 @@ class _CreateNewLeagueScreen extends State<CreateNewLeagueScreen> {
 
   JoiningChoice _joiningChoice = JoiningChoice.invite_only;
   List<String> players =[];
-  int noOfPlayers;
+  late int noOfPlayers;
 
   @override
   void initState() {
@@ -109,7 +109,7 @@ class _CreateNewLeagueScreen extends State<CreateNewLeagueScreen> {
                 Flexible(
                   fit: FlexFit.loose,
                   child: ListTile(
-                    contentPadding: EdgeInsets.only(left: 4.0),
+                    contentPadding: EdgeInsets.only(left: 5.0),
                     title: Transform.translate(
                         offset: Offset(-16, 0), child: Text('Invite only')),
                     leading: Radio<JoiningChoice>(
@@ -181,3 +181,4 @@ class _CreateNewLeagueScreen extends State<CreateNewLeagueScreen> {
     );
   }
 }
+*/

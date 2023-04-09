@@ -6,7 +6,7 @@ class CircularScoreWidget extends StatefulWidget {
   final int score;
   final String appendText;
   final Color color;
-  const CircularScoreWidget({Key key, this.score, this.color, this.appendText}) : super(key: key);
+  const CircularScoreWidget({ Key? key, required this.score, required this.color, required this.appendText}) : super(key: key);
 
   @override
   _CircularScoreWidgetState createState() => _CircularScoreWidgetState();
@@ -14,8 +14,8 @@ class CircularScoreWidget extends StatefulWidget {
 
 class _CircularScoreWidgetState extends State<CircularScoreWidget> with SingleTickerProviderStateMixin{
 
-  Animation animation;
-  AnimationController animationController;
+  late Animation animation;
+  late AnimationController animationController;
 
   @override
   void initState() {

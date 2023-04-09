@@ -1,9 +1,10 @@
+
 import 'package:firebase_auth/firebase_auth.dart';
 class MyFirebaseAuth {
   static String status = "success";
-  static String currentUserId = FirebaseAuth.instance.currentUser.uid;
+  static String? currentUserId = FirebaseAuth.instance.currentUser?.uid;
 
-  static Future<String> signInUser({String email, String password}) async {
+  static Future<String> signInUser({required String email, required String password}) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
@@ -15,8 +16,8 @@ class MyFirebaseAuth {
     return status;
   }
 
-  static User isUserLoggedIn(){
-    User loggedInUser;
+  static User? isUserLoggedIn(){
+    User? loggedInUser;
     FirebaseAuth.instance
         .authStateChanges()
         .listen((User user) {
@@ -26,11 +27,11 @@ class MyFirebaseAuth {
         print('User is signed in!');
       }
       loggedInUser = user;
-    });
+    } as void Function(User? event)?);
     return loggedInUser;
   }
 
-  static Future<String> signUpUser({String email, String password}) async {
+  static Future<String> signUpUser({required String email, required String password}) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email,
@@ -42,8 +43,8 @@ class MyFirebaseAuth {
     return status;
   }
 
-  static Future<void> deleteCurrentUser(){
-    FirebaseAuth.instance.currentUser.delete();
+  static Future<void> deleteCurrentUser()async {
+    FirebaseAuth.instance.currentUser?.delete();
   }
 
 

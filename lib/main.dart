@@ -26,8 +26,8 @@ void main() async{
         SignInScreen.kSignInScreen: (context) => SignInScreen(),
         SignUpScreen.kSignUpScreen: (context) => SignUpScreen(),
         LeaderboardScreen.kLeaderboardScreen: (context) => LeaderboardScreen(),
-        LeagueScreen.kLeagueScreen: (context) => LeagueScreen(),
-        CreateNewLeagueScreen.kCreateNewLeagueScreen: (context) => CreateNewLeagueScreen(),
+        //LeagueScreen.kLeagueScreen: (context) => LeagueScreen(),
+        //CreateNewLeagueScreen.kCreateNewLeagueScreen: (context) => CreateNewLeagueScreen(),
       }
     ),
   );

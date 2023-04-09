@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../model/leaderboard_item.dart';
+import 'package:thumbing/firebase/firebase_firestore.dart';
+
 import '../utility/constants.dart';
 import '../widgets/leaderboard.dart';
 
@@ -11,10 +11,10 @@ class LeaderboardScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _LeaderboardScreenState();
 }
 
-class OvalDisplayCard extends StatelessWidget{
+class OvalDisplayCard extends StatelessWidget {
   final String infoText;
 
-  const OvalDisplayCard({Key key, this.infoText}) : super(key: key);
+  const OvalDisplayCard({Key? key, required this.infoText}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +24,8 @@ class OvalDisplayCard extends StatelessWidget{
         borderRadius: BorderRadius.all(Radius.circular(20.0)),
       ),
       child: Padding(
-        padding: const EdgeInsets.only(left: 12.0,
-            top: 8.0,
-            right: 12.0,
-            bottom: 8.0),
+        padding: const EdgeInsets.only(
+            left: 12.0, top: 8.0, right: 12.0, bottom: 8.0),
         child: Text(
           infoText,
           style: TextStyle(
@@ -39,13 +37,37 @@ class OvalDisplayCard extends StatelessWidget{
       ),
     );
   }
-  
-  
 }
 
 class _LeaderboardScreenState extends State<LeaderboardScreen> {
-  String dropDownValue = "League 1";
-  List<String> leagues = ['League 1', 'League 2', 'League 3', 'League 4', 'League 5'];
+  var userName;
+  var avgWPM;
+  var avgAcc;
+  var bestRank;
+
+  setUserData() async {
+    await MyCloudFirestore.getUser().then((value) {
+      setState(() {
+        userName = value?.userName;
+        avgWPM = value?.wpm;
+        avgAcc = value?.acc;
+      });
+    });
+  }
+
+
+  @override
+  void initState() {
+    setUserData();
+    MyCloudFirestore.getUserRank().then((value){
+      setState(() {
+        bestRank = value;
+        print('Best rank $value');
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -68,56 +90,36 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                     Container(
                       child: CircleAvatar(
                         radius: 50,
-                        backgroundImage: AssetImage(
-                            'assets/images/totoro.jpg'),
+                        backgroundImage: AssetImage('assets/images/totoro.jpg'),
                       ),
                     ),
                     Text(
-                      'Totoro Yo',
+                      '$userName',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    OvalDisplayCard(infoText: 'Rank 12',),
-                    SizedBox(height: 10,),
-                    DropdownButton(
-                        value: dropDownValue,
-                        style: kCardTextStyle,
-                        icon: Icon(Icons.arrow_downward, color: Colors.white, size: 20.0,),
-                        underline: Container(
-                          height: 4,
-                          color: Colors.deepPurpleAccent,
-                        ),
-                        selectedItemBuilder: (BuildContext context){
-                          return leagues.map((String value){
-                            return Center(
-                              child: Text(
-                                dropDownValue,
-                                style: kCardTextStyle.copyWith(fontSize: 16)
-                              ),
-                            );
-                          }).toList();
-                        },
-                        items: leagues
-                        .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem(
-                            value: value,
-                            child: Text(value, style: kCardTextStyle.copyWith(color: Colors.deepPurple),),
-                          );
-                    }).toList(), onChanged: (String newValue){
-                      setState(() {
-                        dropDownValue = newValue;
-                      });
-                    }),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    OvalDisplayCard(infoText: "Rank $bestRank"),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        OvalDisplayCard(infoText: 'Avg WPM: 77',),
-                        OvalDisplayCard(infoText: 'Avg Acc: 99',),
-                        OvalDisplayCard(infoText: 'Best Rank: 1',)
+                        OvalDisplayCard(
+                          infoText: 'Avg WPM: $avgWPM',
+                        ),
+                        OvalDisplayCard(
+                          infoText: 'Avg Acc: $avgAcc',
+                        ),
                       ],
                     )
                   ],
@@ -131,10 +133,17 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 10.0,),
-            Expanded(child: Padding(
+            SizedBox(
+              height: 10.0,
+            ),
+            Expanded(
+                child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Leaderboard([], false, BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+              child: Leaderboard(
+                  false,
+                  BorderRadius.only(
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0))),
             )),
           ],
         ),
@@ -142,3 +151,42 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     );
   }
 }
+
+/*
+* DropdownButton(
+                        value: dropDownValue,
+                        style: kCardTextStyle,
+                        icon: Icon(
+                          Icons.arrow_downward,
+                          color: Colors.white,
+                          size: 20.0,
+                        ),
+                        underline: Container(
+                          height: 4,
+                          color: Colors.deepPurpleAccent,
+                        ),
+                        selectedItemBuilder: (BuildContext context) {
+                          return leagues.map((String value) {
+                            return Center(
+                              child: Text(dropDownValue,
+                                  style: kCardTextStyle.copyWith(fontSize: 16)),
+                            );
+                          }).toList();
+                        },
+                        items: leagues
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem(
+                            value: value,
+                            child: Text(
+                              value,
+                              style: kCardTextStyle.copyWith(
+                                  color: Colors.deepPurple),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dropDownValue = newValue!;
+                          });
+                        }),
+* */

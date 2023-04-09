@@ -20,21 +20,19 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  FocusNode _emailFocusNode;
-  FocusNode _passwordFocusNode;
+  late FocusNode _emailFocusNode;
+  late FocusNode _passwordFocusNode;
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  TextEditingController _emailController;
-  TextEditingController _passwordController;
+  late TextEditingController _emailController;
+  late TextEditingController _passwordController;
 
   Color getColorOnFocus(FocusNode focusNode) {
     return focusNode.hasFocus ? Colors.deepPurpleAccent : Colors.grey;
   }
 
   void _requestFocus(FocusNode focusNode) {
-    setState(() {
       FocusScope.of(context).requestFocus(focusNode);
-    });
   }
 
   void disposeTextControllers() {
@@ -56,7 +54,7 @@ class _SignInScreenState extends State<SignInScreen> {
         showSnackBar(msg: widget._kWrongPassword, context: context);
         break;
       case 'success':
-        Navigator.pushNamed(context, HomeScreen.kHomeRoute);
+        Navigator.popAndPushNamed(context, HomeScreen.kHomeRoute);
         break;
       default:
         showSnackBar(msg: widget._kDefaultError, context: context);
@@ -98,7 +96,7 @@ class _SignInScreenState extends State<SignInScreen> {
               String status = await MyFirebaseAuth.signInUser(
                   email: _emailController.text.trim(),
                   password: _passwordController.text.trim());
-              print(status); 
+
               handleSignInExceptions(status);
             },
           ),
@@ -119,58 +117,28 @@ class _SignInScreenState extends State<SignInScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        'Sign In',
+                        'TapTap',
                         textAlign: TextAlign.start,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 35,
+                          fontSize: 40,
+                          color: Colors.deepPurpleAccent,
                         ),
                       ),
-                      SizedBox(
-                        height: 40,
-                      ),
-                      Text(
-                        'Log In with Google or Facebook',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.0,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: SocialMediaButton(
-                                logoResource: 'assets/images/google_logo.png',
-                                onPressed: () {}),
-                          ),
-                          SizedBox(width: 10.0),
-                          Expanded(
-                            child: SocialMediaButton(
-                              logoResource: 'assets/images/facebook_logo.png',
-                              onPressed: () {},
-                            ),
-                          ),
-                        ],
-                      ),
+
                       SizedBox(
                         height: 20,
                       ),
                       Text(
-                        'Log In with Email and Password',
+                        'Log In with Email',
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
-                          fontSize: 18.0,
+                          fontSize: 20.0,
                         ),
                       ),
                       SizedBox(
@@ -208,9 +176,6 @@ class _SignInScreenState extends State<SignInScreen> {
                       SizedBox(
                         height: 20,
                       ),
-                      SizedBox(
-                        height: 20,
-                      ),
                       RichText(
                         textAlign: TextAlign.center,
                         text: TextSpan(
@@ -227,7 +192,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   ),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
-                                      Navigator.pushNamed(
+                                      Navigator.pushReplacementNamed(
                                           context, SignUpScreen.kSignUpScreen);
                                     }),
                             ]),

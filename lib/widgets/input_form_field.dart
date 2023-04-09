@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class InputFormField extends StatefulWidget{
   final FocusNode focusNode;
-  final Function onTap;
+  final VoidCallback? onTap;
   final Icon prefixIcon;
   final String hintText;
   final String labelText;
@@ -10,7 +10,8 @@ class InputFormField extends StatefulWidget{
   final TextEditingController controller;
   final bool obscureText;
 
-  const InputFormField({this.focusNode, this.onTap, this.prefixIcon, this.hintText, this.labelText, this.labelStyle, this.controller, this.obscureText});
+  const InputFormField({required this.focusNode, required this.onTap, required this.prefixIcon
+    , required this.hintText, required this.labelText, required this.labelStyle, required this.controller, required this.obscureText});
 
   @override
   State<StatefulWidget> createState() => _InputFormField();

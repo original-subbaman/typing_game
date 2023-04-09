@@ -56,7 +56,7 @@ class _TestSettingState extends State<TestSetting> {
                           title: RadioLabel(labelText: '30 sec'),
                           groupValue: selectedLength,
                           onChanged: (value) =>
-                              setState(() => selectedLength = value)),
+                              setState(() => selectedLength = value as int)),
                       RadioListTile(
                           title: RadioLabel(
                             labelText: '1 min',
@@ -65,7 +65,7 @@ class _TestSettingState extends State<TestSetting> {
                           activeColor: kFABColor,
                           groupValue: selectedLength,
                           onChanged: (value) =>
-                              setState(() => selectedLength = value)),
+                              setState(() => selectedLength = value as int)),
                       RadioListTile(
                           title: RadioLabel(
                             labelText: '1 min 30 sec',
@@ -74,7 +74,7 @@ class _TestSettingState extends State<TestSetting> {
                           activeColor: kFABColor,
                           groupValue: selectedLength,
                           onChanged: (value) =>
-                              setState(() => selectedLength = value)),
+                              setState(() => selectedLength = value as int)),
                     ],
                   ),
                   ListView(
@@ -89,7 +89,7 @@ class _TestSettingState extends State<TestSetting> {
                           groupValue: difficulty,
                           activeColor: kFABColor,
                           onChanged: (value) =>
-                              setState(() => difficulty = value)),
+                              setState(() => difficulty = value as int)),
                       RadioListTile(
                           value: kLorenIpsumTestDifficulty,
                           title: RadioLabel(
@@ -98,7 +98,7 @@ class _TestSettingState extends State<TestSetting> {
                           groupValue: difficulty,
                           activeColor: kFABColor,
                           onChanged: (value) =>
-                              setState(() => difficulty = value)),
+                              setState(() => difficulty = value as int)),
                     ],
                   ),
                 ],
@@ -139,7 +139,7 @@ class _TestSettingState extends State<TestSetting> {
 class RadioLabel extends StatelessWidget {
   String labelText;
 
-  RadioLabel({this.labelText});
+  RadioLabel({required this.labelText});
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +157,7 @@ class SettingTitleText extends StatelessWidget {
   String titleText;
 
   SettingTitleText({
-    this.titleText,
+    required this.titleText,
   });
 
   @override

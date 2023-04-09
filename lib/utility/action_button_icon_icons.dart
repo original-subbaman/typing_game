@@ -27,7 +27,7 @@ class ActionButtonIcon {
   ActionButtonIcon._();
 
   static const _kFontFam = 'ActionButtonIcon';
-  static const String _kFontPkg = null;
+  static const String? _kFontPkg = null;
 
   static const IconData leaf = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData medal = IconData(0xf5a2, fontFamily: _kFontFam, fontPackage: _kFontPkg);

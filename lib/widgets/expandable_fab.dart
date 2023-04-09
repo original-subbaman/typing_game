@@ -8,17 +8,17 @@ class ExpandableFab extends StatefulWidget {
   final List<Widget> children;
 
   ExpandableFab(
-      {@required this.initialOpen,
-      @required this.distance,
-      @required this.children});
+      {required this.initialOpen,
+      required this.distance,
+      required this.children});
 
   @override
   _ExpandableFabState createState() => _ExpandableFabState();
 }
 
 class _ExpandableFabState extends State<ExpandableFab> with SingleTickerProviderStateMixin{
-   AnimationController _controller;
-   Animation<double> _expandAnimation;
+   late AnimationController _controller;
+   late Animation<double> _expandAnimation;
   bool _open = false;
   @override
   void initState() {
@@ -141,7 +141,7 @@ class ActionButton extends StatelessWidget {
   final Widget icon;
 
 
-  ActionButton({@required this.onPressed, @required this.icon});
+  ActionButton({required this.onPressed, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -151,6 +151,7 @@ class ActionButton extends StatelessWidget {
       color: Colors.white,
       elevation: 4.0,
       child: IconTheme.merge(
+        data: IconThemeData(),
         child: IconButton(
           onPressed: onPressed,
           icon: icon,
@@ -196,6 +197,6 @@ class _ExpandingActionButton extends StatelessWidget {
   }
 
   _ExpandingActionButton(
-      {this.directionInDegrees, this.maxDistance, this.progress, this.child});
+      {required this.directionInDegrees, required this.maxDistance, required this.progress, required this.child});
 }
 

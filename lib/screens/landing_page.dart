@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:thumbing/firebase/firebase_firestore.dart';
 import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/screens/sign_in.dart';
 
@@ -10,12 +11,14 @@ class Wrapper extends StatefulWidget{
 }
 
 class _WrapperState extends State<Wrapper>{
-  User _user;
+  User? _user;
   @override
   void initState() {
-    // TODO: implement initState
+    FirebaseAuth.instance.authStateChanges().listen((user) =>{
+        if(user != null){
+          updateUserState(user)
+    }});
     super.initState();
-    FirebaseAuth.instance.authStateChanges().listen((user) => updateUserState(user));
   }
   @override
   Widget build(BuildContext context) {

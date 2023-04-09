@@ -6,13 +6,13 @@ import 'package:thumbing/utility/constants.dart';
 class ValueDisplayCard extends StatelessWidget {
   final String titleText;
   String valueText;
-  final Color bgColor;
+  final Color? bgColor;
   final titleTxtStyle;
   final valueTxtStyle;
   final double paddingHorizontal;
   final double paddingVertical;
 
-  ValueDisplayCard({@required this.titleText, @required this.valueText,
+  ValueDisplayCard({required this.titleText, required this.valueText,
     this.bgColor,
     this.titleTxtStyle,
     this.valueTxtStyle,

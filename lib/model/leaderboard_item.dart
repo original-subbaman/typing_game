@@ -8,5 +8,5 @@ class LeaderboardItem{
   int rank;
   int leagueScore;
 
-  LeaderboardItem({this.userName, this.rank, this.leagueScore});
+  LeaderboardItem({required this.userName, required this.leagueScore, required this.rank} );
 }

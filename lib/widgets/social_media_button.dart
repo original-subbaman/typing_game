@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class SocialMediaButton extends StatefulWidget{
   final String logoResource;
-  final Function onPressed;
-  const SocialMediaButton({this.logoResource, this.onPressed});
+  final VoidCallback? onPressed;
+  const SocialMediaButton({required this.logoResource, required this.onPressed});
 
   @override
   State<SocialMediaButton> createState() => _SocialMediaButtonState();
