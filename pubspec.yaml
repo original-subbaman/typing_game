@@ -41,11 +41,16 @@ dependencies:
   lorem_ipsum: ^0.0.1
   shared_preferences: ^2.0.15
   google_api_availability: ^3.0.1
+  progress_dialog: ^1.2.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.0
 
+flutter_icons:
+  android: true
+  image_path: "assets/logo_taptap.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:thumbing/firebase/firebase_authentication.dart';
 import 'package:thumbing/firebase/firebase_constants.dart';
 import 'package:thumbing/model/leaderboard_item.dart';
@@ -15,7 +16,6 @@ class MyCloudFirestore {
   static int? currentRank;
 
   static Future<String?> getCurrentUserName() async {
-    String? currentUser;
     await _users
         .doc(MyFirebaseAuth.currentUserId)
         .get()
@@ -176,7 +176,7 @@ class MyCloudFirestore {
   }
 
   static Future<int?> getUserRank() async {
-    await getLeaderboard().then((players) {
+    return await getLeaderboard().then((players) {
       for (var player in players) {
         if (player.userName == MyCloudFirestore.currentUser) {
           return player.rank;

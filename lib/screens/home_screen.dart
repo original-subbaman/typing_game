@@ -93,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
               }),
           actions: [
             GestureDetector(
-              onTap: () => Navigator.popAndPushNamed(
+              onTap: () => Navigator.pushNamed(
                   context, ProfilePageScreen.kProfilePageScreen),
               child: Container(
                 margin: EdgeInsets.only(right: 8.0, top: 6.0),
@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
         floatingActionButton: FloatingActionButton(
           backgroundColor: kFABColor,
           onPressed: () =>
-              Navigator.popAndPushNamed(context, TestSetting.kTestSetting),
+              Navigator.pushNamed(context, TestSetting.kTestSetting),
           child: Image.asset("assets/icons/letter-t-.png"),
         ),
         body: Padding(

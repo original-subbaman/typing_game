@@ -2,6 +2,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/screens/sign_up.dart';
 import 'package:thumbing/utility/constants.dart';
@@ -26,6 +27,8 @@ class _SignInScreenState extends State<SignInScreen> {
 
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
+
+  late ProgressDialog progressDialog;
 
   Color getColorOnFocus(FocusNode focusNode) {
     return focusNode.hasFocus ? Colors.deepPurpleAccent : Colors.grey;
@@ -81,6 +84,10 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
+    progressDialog = ProgressDialog(context, type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialog.style(
+      message: 'Just a moment...'
+    );
     return SafeArea(
         child: Scaffold(
       backgroundColor: Colors.white,
@@ -93,10 +100,12 @@ class _SignInScreenState extends State<SignInScreen> {
             backgroundColor: Colors.deepPurpleAccent,
             onPressed: () async {
               dismissKeyboard();
+              progressDialog.show();
               String status = await MyFirebaseAuth.signInUser(
                   email: _emailController.text.trim(),
-                  password: _passwordController.text.trim());
-
+                  password: _passwordController.text.trim()).whenComplete(() {
+                  progressDialog.hide();
+              });
               handleSignInExceptions(status);
             },
           ),
