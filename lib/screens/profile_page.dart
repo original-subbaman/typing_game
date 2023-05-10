@@ -125,7 +125,9 @@ class _ProfilePageScreenState extends State<ProfilePageScreen> {
                       tag: 'profile_hero',
                       child: CircleAvatar(
                         radius: 50,
-                        backgroundImage: AssetImage('assets/images/totoro.jpg'),
+                        child: ClipOval(
+                         child: Image.asset('assets/icons/user.png'),
+                        )
                       ),
                     ),
                   ),

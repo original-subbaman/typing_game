@@ -209,7 +209,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
             _updateBestScore(acc: acc, wpm: wpm);
             _updateLatestScore(acc: acc, wpm: wpm);
             Navigator.pop(context);
-            Navigator.popAndPushNamed(context, HomeScreen.kHomeRoute);
+            Navigator.popUntil(context, (route) => route.isFirst);
           },
         )
       ],

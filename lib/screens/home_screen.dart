@@ -102,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Center(
                     child: CircleAvatar(
                       radius: 22,
-                      backgroundImage: AssetImage('assets/images/totoro.jpg'),
+                      backgroundImage: AssetImage('assets/icons/user.png'),
                     ),
                   ),
                 ),
