@@ -180,7 +180,10 @@ class _ProfilePageScreenState extends State<ProfilePageScreen> {
                           Colors.grey.withAlpha(50),
                         )),
                         onPressed: () {
-                           MyFirebaseAuth.signOutUser().then((status)=> Navigator.popAndPushNamed(context, SignInScreen.kSignInScreen));
+                           MyFirebaseAuth.signOutUser().then((status)=> {
+                             Navigator.pushNamedAndRemoveUntil(context,
+                                 SignInScreen.kSignInScreen, (route) => false)
+                           });
                         },
                         child: Text(
                           'Sign Out',

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:thumbing/firebase/firebase_firestore.dart';
+import 'package:thumbing/model/leaderboard_item.dart';
 import 'package:thumbing/screens/leaderboard_screen.dart';
 import 'package:thumbing/utility/constants.dart';
 
@@ -16,10 +17,28 @@ class Leaderboard extends StatefulWidget {
 
 class _LeaderboardState extends State<Leaderboard> {
   var items = [];
-  setPlayerRank(){
-    for(var i = 0; i < items.length; i++){
-      if(MyCloudFirestore.currentUser == items[i].userName){
-        MyCloudFirestore.currentRank= i + 1;
+
+  var trailingItemTextStyle = kCardTextStyle.copyWith(
+      fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold);
+
+  TrailingText(data) {
+    return Text(
+      data.toString(),
+      style: trailingItemTextStyle,
+    );
+  }
+
+  HeaderText(header){
+    return Text(
+      header,
+      style: trailingItemTextStyle.copyWith(color: Colors.deepPurpleAccent),
+    );
+  }
+
+  setPlayerRank() {
+    for (var i = 1; i < items.length; i++) {
+      if (MyCloudFirestore.currentUser == items[i].userName) {
+        MyCloudFirestore.currentRank = i + 1;
       }
     }
   }
@@ -27,14 +46,15 @@ class _LeaderboardState extends State<Leaderboard> {
   setLeagueData() async {
     await MyCloudFirestore.getLeaderboard().then((value) {
       setState(() {
-        items = value;
-        setPlayerRank();
+         items = items + value;
+         setPlayerRank();
       });
     });
   }
 
   @override
   void initState() {
+    items.add(LeaderboardItem(userName: "", leagueScore: 0, rank: 0, wpm: 0, acc: 0));
     setLeagueData();
     super.initState();
   }
@@ -49,7 +69,7 @@ class _LeaderboardState extends State<Leaderboard> {
         width: double.infinity,
         child: Padding(
           padding: const EdgeInsets.only(
-              left: 20.0, right: 20.0, top: 12.0, bottom: 20.0),
+              left: 15.0, right: 15.0, top: 12.0, bottom: 20.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,19 +118,42 @@ class _LeaderboardState extends State<Leaderboard> {
                   physics: BouncingScrollPhysics(
                       parent: AlwaysScrollableScrollPhysics()),
                   itemBuilder: (_, index) {
-                    return ListTile(
-                      title: Text(
-                        items[index].userName,
-                        style: kCardTextStyle,
-                      ),
-                      trailing: Text(
-                        items[index].rank.toString(),
-                        style: kCardTextStyle.copyWith(
-                            fontSize: 20,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    );
+                    var user = items[index];
+                    if(index == 0){
+                      return ListTile(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(width: 2, color: Colors.deepPurpleAccent),
+                          borderRadius: BorderRadius.circular(20)
+                        ),
+                        selectedTileColor: Colors.white,
+                        selected: true,
+                        leading: HeaderText("Rank"),
+                        title: HeaderText("Player"),
+                        trailing: Wrap(
+                          children: [
+                            HeaderText("wpm"),
+                            HeaderText("acc"),
+                          ],
+                          spacing: 8.0,
+                        ),
+                      );
+                    }else{
+                      return ListTile(
+                        leading: TrailingText(user.rank),
+                        title: Text(
+                          user.userName,
+                          style: kCardTextStyle,
+                        ),
+                        trailing: Wrap(
+                          children: <Widget>[
+                            TrailingText(user.wpm),
+                            TrailingText(user.acc),
+                          ],
+                          spacing: 20.0,
+                        ),
+                      );
+                    }
+
                   },
                 ),
               )

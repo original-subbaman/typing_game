@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
 
-  void setUserDataToUI() async{
+   setUserDataToUI() async{
     await MyCloudFirestore.getUser().then((value){
      setState(() {
        if(value != null){
@@ -59,8 +59,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    super.initState();
     setUserDataToUI();
+    super.initState();
+  }
+
+  @override
+  void dispose(){
+     super.dispose();
   }
 
   @override
@@ -193,40 +198,5 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// List<LeaderboardItem> items = [
-//   LeaderboardItem(
-//       userImage: AssetImage('assets/images/gojo.jpg'),
-//       userName: 'Satoru Gojo',
-//       rank: '1',
-//       upDownIcon: kRankUpIcon),
-//   LeaderboardItem(
-//       userImage: AssetImage('assets/images/saitama.jpg'),
-//       userName: 'Saitama',
-//       rank: '2',
-//       upDownIcon: kRankUpIcon),
-//   LeaderboardItem(
-//       userImage: AssetImage('assets/images/saitama.jpg'),
-//       userName: 'Escanor',
-//       rank: '3',
-//       upDownIcon: kRankDownIcon),
-//   LeaderboardItem(
-//       userImage: AssetImage('assets/images/saitama.jpg'),
-//       userName: 'Madara Uchiha',
-//       rank: '4',
-//       upDownIcon: kRankUpIcon),
-//   LeaderboardItem(
-//       userImage: AssetImage('assets/images/saitama.jpg'),
-//       userName: 'Son Goku',
-//       rank: '5',
-//       upDownIcon: kRankDownIcon),
-//   LeaderboardItem(
-//       userImage: AssetImage('assets/images/gojo.jpg'),
-//       userName: 'Satoru Gojo',
-//       rank: '1',
-//       upDownIcon: kRankUpIcon),
-//   LeaderboardItem(
-//       userImage: AssetImage('assets/images/gojo.jpg'),
-//       userName: 'Satoru Gojo',
-//       rank: '1',
-//       upDownIcon: kRankUpIcon),
-// ];
+
+

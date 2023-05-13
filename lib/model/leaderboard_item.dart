@@ -7,6 +7,10 @@ class LeaderboardItem{
   String userName;
   int rank;
   int leagueScore;
+  int wpm;
+  int acc;
 
-  LeaderboardItem({required this.userName, required this.leagueScore, required this.rank} );
+  LeaderboardItem({required this.userName,
+    required this.leagueScore, required this.rank, required this.wpm
+  , required this.acc} );
 }

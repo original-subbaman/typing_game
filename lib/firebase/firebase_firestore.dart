@@ -129,13 +129,17 @@ class MyCloudFirestore {
     });
   }
 
-  static updateLeagueScoreInLeagueTable({required int leagueScore}) async {
+  static updateLeagueScoreInLeagueTable({required int leagueScore, required int acc, required int wpm}) async {
     final league = _league.doc(MyFirebaseAuth.currentUserId);
     await league.get().then((snapshot) {
       if (snapshot.exists) {
         final Map data = snapshot.data() as Map;
         if (leagueScore > data['league_score']) {
-          league.update({"league_score": leagueScore}).then(
+          league.update({
+            "league_score": leagueScore,
+            "acc": data['acc'],
+            "wpm": data['wpm']
+          }).then(
               (value) => print("User league score updated in league table"),
               onError: (e) =>
                   print("Error updating league score in league table"));
@@ -167,8 +171,16 @@ class MyCloudFirestore {
                 final player = doc.data();
                 final String userName = player["user_name"];
                 final int leagueScore = player["league_score"];
+                final int wpm = player["wpm"];
+                final int acc = player["acc"];
+                print(wpm);
                 topTenPlayersList.add(new LeaderboardItem(
-                    userName: userName, leagueScore: leagueScore, rank: rank));
+                    userName: userName,
+                    leagueScore: leagueScore,
+                    rank: rank,
+                    acc: acc,
+                    wpm: wpm,
+                ));
                 rank++;
               })
             });
