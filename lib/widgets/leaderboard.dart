@@ -52,8 +52,20 @@ class _LeaderboardState extends State<Leaderboard> {
     });
   }
 
+  refreshLeagueData() async {
+    await MyCloudFirestore.getLeaderboard().then((value) {
+      setState(() {
+        items.removeRange(1, items.length);
+        items = items + value;
+        setPlayerRank();
+      });
+    });
+  }
+
   @override
   void initState() {
+    //Need to add one dummy item to the items list at the index 0 as a place holder for the header
+    //header is Rank, Player, WPM, ACC
     items.add(LeaderboardItem(userName: "", leagueScore: 0, rank: 0, wpm: 0, acc: 0));
     setLeagueData();
     super.initState();
@@ -89,7 +101,7 @@ class _LeaderboardState extends State<Leaderboard> {
                     children: [
                       IconButton(
                         onPressed: () {
-                          setLeagueData();
+                          refreshLeagueData();
                         },
                         icon: Icon(Icons.refresh, size: 25),
                         color: Colors.white,

@@ -251,7 +251,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
               ElevatedButton(
                   onPressed: () => Navigator.pop(context, false), child: Text('No')),
               ElevatedButton(
-                  onPressed: () => Navigator.pop(context, true), child: Text('Yes'))
+                  onPressed: () => Navigator.popUntil(context, (route) => route.isFirst), child: Text('Yes'))
             ],
           ));
 

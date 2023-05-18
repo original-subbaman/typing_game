@@ -1,13 +1,12 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/screens/sign_up.dart';
 import 'package:thumbing/utility/constants.dart';
-import 'package:thumbing/widgets/social_media_button.dart';
 import 'package:thumbing/widgets/input_form_field.dart';
+import 'package:thumbing/widgets/app_banner.dart';
 import '../firebase/firebase_authentication.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -35,7 +34,7 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   void _requestFocus(FocusNode focusNode) {
-      FocusScope.of(context).requestFocus(focusNode);
+    FocusScope.of(context).requestFocus(focusNode);
   }
 
   void disposeTextControllers() {
@@ -84,13 +83,13 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    progressDialog = ProgressDialog(context, type: ProgressDialogType.Normal, isDismissible: false);
-    progressDialog.style(
-      message: 'Just a moment...'
-    );
+    progressDialog = ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    progressDialog.style(message: 'Just a moment...');
     return SafeArea(
         child: Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: true,
       floatingActionButton: SizedBox(
         width: 70,
         height: 70,
@@ -102,9 +101,10 @@ class _SignInScreenState extends State<SignInScreen> {
               dismissKeyboard();
               progressDialog.show();
               String status = await MyFirebaseAuth.signInUser(
-                  email: _emailController.text.trim(),
-                  password: _passwordController.text.trim()).whenComplete(() {
-                  progressDialog.hide();
+                      email: _emailController.text.trim(),
+                      password: _passwordController.text.trim())
+                  .whenComplete(() {
+                progressDialog.hide();
               });
               handleSignInExceptions(status);
             },
@@ -114,73 +114,71 @@ class _SignInScreenState extends State<SignInScreen> {
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Flexible(
               flex: 2,
               fit: FlexFit.loose,
               child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                ),
+                color: Colors.white,
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Text(
-                        'TapTap',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 40,
-                          color: Colors.deepPurpleAccent,
-                        ),
-                      ),
-
+                      AppBanner(),
                       SizedBox(
-                        height: 20,
+                        height: 40,
                       ),
                       Text(
-                        'Log In with Email',
+                        'Log in with your email id to get started',
                         style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w300,
                           fontSize: 20.0,
+
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Card(
+                        elevation: 4,
+                        child: InputFormField(
+                          focusNode: _emailFocusNode,
+                          prefixIcon: Icon(Icons.email,
+                              color: getColorOnFocus(_emailFocusNode)),
+                          onTap: () => _requestFocus(_emailFocusNode),
+                          hintText: 'someone@emaill.com',
+                          labelText: 'Email',
+                          labelStyle: TextStyle(
+                            color: getColorOnFocus(_emailFocusNode),
+                          ),
+                          controller: _emailController,
+                          obscureText: false,
                         ),
                       ),
                       SizedBox(
                         height: 20,
                       ),
-                      InputFormField(
-                        focusNode: _emailFocusNode,
-                        prefixIcon: Icon(Icons.email,
-                            color: getColorOnFocus(_emailFocusNode)),
-                        onTap: () => _requestFocus(_emailFocusNode),
-                        hintText: 'someone@emaill.com',
-                        labelText: 'Email',
-                        labelStyle: TextStyle(
-                          color: getColorOnFocus(_emailFocusNode),
+                      Card(
+                        elevation: 4,
+                        child: InputFormField(
+                          focusNode: _passwordFocusNode,
+                          prefixIcon: Icon(Icons.password,
+                              color: getColorOnFocus(_passwordFocusNode)),
+                          onTap: () => _requestFocus(_passwordFocusNode),
+                          hintText: 'Password',
+                          labelText: 'Password',
+                          labelStyle: TextStyle(
+                            color: getColorOnFocus(_passwordFocusNode),
+                          ),
+                          controller: _passwordController,
+                          obscureText: true,
                         ),
-                        controller: _emailController,
-                        obscureText: false,
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      InputFormField(
-                        focusNode: _passwordFocusNode,
-                        prefixIcon: Icon(Icons.password,
-                            color: getColorOnFocus(_passwordFocusNode)),
-                        onTap: () => _requestFocus(_passwordFocusNode),
-                        hintText: 'Password',
-                        labelText: 'Password',
-                        labelStyle: TextStyle(
-                          color: getColorOnFocus(_passwordFocusNode),
-                        ),
-                        controller: _passwordController,
-                        obscureText: true,
                       ),
                       SizedBox(
                         height: 20,
@@ -201,7 +199,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   ),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
-                                      Navigator.pushReplacementNamed(
+                                      Navigator.pushNamed(
                                           context, SignUpScreen.kSignUpScreen);
                                     }),
                             ]),
@@ -217,3 +215,4 @@ class _SignInScreenState extends State<SignInScreen> {
     ));
   }
 }
+

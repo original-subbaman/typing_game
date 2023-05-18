@@ -7,6 +7,7 @@ import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/screens/sign_in.dart';
 import 'package:thumbing/firebase/firebase_authentication.dart';
 import 'package:thumbing/utility/current_best_score.dart';
+import 'package:thumbing/widgets/app_banner.dart';
 import 'package:thumbing/widgets/input_form_field.dart';
 import 'package:thumbing/utility/constants.dart';
 
@@ -174,24 +175,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Text(
-                            'TapTap',
-                            style: TextStyle(
-                              color: Colors.deepPurpleAccent,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 40.0,
-                            ),
-                          ),
+                          AppBanner(),
                           SizedBox(
                             height: 20,
                           ),
                           Text(
                             'Sign-up to get started',
                             style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 26.0,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w200,
+                              fontSize: 20.0,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                           SizedBox(
                             height: 20,

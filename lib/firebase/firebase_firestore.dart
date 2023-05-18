@@ -137,8 +137,8 @@ class MyCloudFirestore {
         if (leagueScore > data['league_score']) {
           league.update({
             "league_score": leagueScore,
-            "acc": data['acc'],
-            "wpm": data['wpm']
+            "acc": acc,
+            "wpm": wpm,
           }).then(
               (value) => print("User league score updated in league table"),
               onError: (e) =>
@@ -152,6 +152,8 @@ class MyCloudFirestore {
     final player = {
       'user_name': newPlayer.userName,
       'league_score': newPlayer.leagueScore,
+      'acc': 0,
+      'wpm': 0
     };
     await _league
         .doc(newPlayer.uid)
