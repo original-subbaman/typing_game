@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:thumbing/firebase/firebase_firestore.dart';
 import 'package:thumbing/screens/profile_page.dart';
@@ -11,33 +12,31 @@ import 'package:thumbing/widgets/value_display_card.dart';
 
 import '../model/player.dart';
 
-class HomeScreen extends StatefulWidget {
+final userNameProvider = StateProvider<String>((ref) => 'Player');
+final leagueScoreProvider = StateProvider<int>((ref) => 0);
+
+class HomeScreen extends ConsumerStatefulWidget {
   static const kHomeRoute = 'home';
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   final String wpmText = 'WPM';
   final String accText = 'Accuracy';
   int wpmValueText = 0;
   int accValueText = 0;
   late String bestWPM;
   late String bestAcc;
-  int leagueScore = 0;
-  late String userName;
 
-
-
-   setUserDataToUI() async{
-    await MyCloudFirestore.getUser().then((value){
-     setState(() {
-       if(value != null){
-         this.userName = value.userName;
-         this.leagueScore = value.leagueScore;
-       }
-     });
+  _setUserDataToUI() async {
+    await MyCloudFirestore.getUser().then((value) {
+      if (value != null) {
+        print("user: ${value.userName} leagueScore : ${value.leagueScore}");
+        ref.read(userNameProvider.notifier).update((state) => value.userName);
+        ref.read(leagueScoreProvider.notifier).update((state) => value.leagueScore);
+      }
     });
   }
 
@@ -59,17 +58,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    setUserDataToUI();
     super.initState();
+    _setUserDataToUI();
   }
 
   @override
-  void dispose(){
-     super.dispose();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
+    final userName = ref.watch(userNameProvider);
+    final leagueScore = ref.watch(leagueScoreProvider);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -80,22 +81,14 @@ class _HomeScreenState extends State<HomeScreen> {
           iconTheme: IconThemeData(color: kFABColor),
           elevation: 5,
           backgroundColor: kLightBlueAccent,
-          title: FutureBuilder(
-              future: MyCloudFirestore.getCurrentUserName(),
-              builder: (context, snapshot) {
-                var userName = "";
-                if (snapshot.hasData) {
-                  userName = snapshot.data.toString();
-                }
-                return Text(
-                  "Hello $userName",
-                  style: GoogleFonts.lato(
-                    color: Colors.white,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                  ),
-                );
-              }),
+          title: Text(
+            "Hello $userName",
+            style: GoogleFonts.lato(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           actions: [
             GestureDetector(
               onTap: () => Navigator.pushNamed(
@@ -188,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 15.0,
               ),
               Expanded(
-                child: Leaderboard(true, BorderRadius.circular(20)),
+                 child: Leaderboard(true, BorderRadius.circular(20)),
               ),
             ],
           ),
@@ -197,6 +190,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-
-

@@ -6,10 +6,10 @@ class MyFirebaseAuth {
 
   static Future<String> signInUser({required String email, required String password}) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
           password: password
-      );
+      ).then((value) => currentUserId = FirebaseAuth.instance.currentUser?.uid);
     } on FirebaseAuthException catch (e) {
       status = e.code;
     }
@@ -33,10 +33,10 @@ class MyFirebaseAuth {
 
   static Future<String> signUpUser({required String email, required String password}) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email,
           password: password,
-      ) ;
+      ).then((value) => currentUserId = FirebaseAuth.instance.currentUser?.uid);
     } on FirebaseAuthException catch (e) {
       status = e.code;
     }

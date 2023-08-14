@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:thumbing/firebase/firebase_firestore.dart';
 import 'package:thumbing/model/test_settings.dart';
-import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/utility/constants.dart';
 import 'package:thumbing/utility/current_best_score.dart';
 import 'package:thumbing/utility/words_generator.dart';

@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:progress_dialog/progress_dialog.dart';
 import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/screens/sign_up.dart';
 import 'package:thumbing/utility/constants.dart';
@@ -20,6 +19,7 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+
   late FocusNode _emailFocusNode;
   late FocusNode _passwordFocusNode;
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -27,7 +27,6 @@ class _SignInScreenState extends State<SignInScreen> {
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
 
-  late ProgressDialog progressDialog;
 
   Color getColorOnFocus(FocusNode focusNode) {
     return focusNode.hasFocus ? Colors.deepPurpleAccent : Colors.grey;
@@ -66,26 +65,26 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
     _emailFocusNode = FocusNode();
     _passwordFocusNode = FocusNode();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
+    super.initState();
+
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
-    super.dispose();
     disposeFocusNodes();
     disposeTextControllers();
+    super.dispose();
+
   }
 
   @override
   Widget build(BuildContext context) {
-    progressDialog = ProgressDialog(context,
-        type: ProgressDialogType.Normal, isDismissible: false);
-    progressDialog.style(message: 'Just a moment...');
+
     return SafeArea(
         child: Scaffold(
       backgroundColor: Colors.white,
@@ -99,12 +98,17 @@ class _SignInScreenState extends State<SignInScreen> {
             backgroundColor: Colors.deepPurpleAccent,
             onPressed: () async {
               dismissKeyboard();
-              progressDialog.show();
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return Center(child: CircularProgressIndicator(),);
+                }
+              );
               String status = await MyFirebaseAuth.signInUser(
                       email: _emailController.text.trim(),
                       password: _passwordController.text.trim())
                   .whenComplete(() {
-                progressDialog.hide();
+                Navigator.of(context).pop();
               });
               handleSignInExceptions(status);
             },

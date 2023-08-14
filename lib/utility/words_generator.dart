@@ -1,32 +1,34 @@
 import 'dart:convert';
 
 import 'package:lorem_ipsum/lorem_ipsum.dart';
-import 'package:random_words/random_words.dart';
+import 'package:word_generator/word_generator.dart';
 
 class RandomWordsGenerator {
-  final kAdjectiveCount = 90;
+  final kVerbCount = 90;
   final kNounCount = 90;
   final kTotalWords = 180;
   final kNoWordsPerLine = 6;
-  _generateRandomAdjectives(){
-    List<String> randomAdjectives = [];
-    generateAdjective().take(kAdjectiveCount).forEach((element) {
-      randomAdjectives.add(element.asString);
-    });
-    return randomAdjectives;
+  final kWordGenerator = WordGenerator();
+  _generateRandomVerbs(){
+    List<String> randomVerbs = [];
+    for(var i = 0; i < kVerbCount; i++){
+      randomVerbs.add(kWordGenerator.randomVerb());
+    }
+
+    return randomVerbs;
   }
 
   _generateRandomNouns(){
     List<String> randomNouns = [];
-    generateNoun().take(kNounCount).forEach((element){
-      randomNouns.add(element.asString);
-    });
+    for(var i = 0; i < kNounCount; i++){
+      randomNouns.add(kWordGenerator.randomNoun());
+    }
     return randomNouns;
   }
 
   List<String> generateRandomWords() {
     List<String> randomWords = [];
-    randomWords.addAll(_generateRandomAdjectives());
+    randomWords.addAll(_generateRandomVerbs());
     randomWords.addAll(_generateRandomNouns());
     randomWords.shuffle();
 

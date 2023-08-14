@@ -37,11 +37,12 @@ dependencies:
   firebase_core: ^2.4.1
   firebase_auth: ^4.2.6
   cloud_firestore: ^4.3.1
-  random_words: ^1.0.2
   lorem_ipsum: ^0.0.1
   shared_preferences: ^2.0.15
   google_api_availability: ^3.0.1
-  progress_dialog: ^1.2.4
+  word_generator: ^0.4.3
+  riverpod: ^2.3.6
+  flutter_riverpod: ^2.3.6
 
 dev_dependencies:
   flutter_test:

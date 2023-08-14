@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:progress_dialog/progress_dialog.dart';
 import 'package:thumbing/firebase/firebase_firestore.dart';
 import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/screens/sign_in.dart';
@@ -35,7 +34,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   late TextEditingController _passwordController;
   late TextEditingController _emailController;
   late TextEditingController _fullNameController;
-  late ProgressDialog _progressDialog;
 
   @override
   void initState() {
@@ -94,7 +92,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
             (error, stackTrace) => showCreateUserException(error as String))
         .then((value) {
         MyCloudFirestore.addNewUserToLeague(newPlayer: newUser);
-        Navigator.pushReplacementNamed(context, HomeScreen.kHomeRoute);
+        Navigator.popUntil(context, ModalRoute.withName(SignInScreen.kSignInScreen));
+        Navigator.popAndPushNamed(context, HomeScreen.kHomeRoute);
     });
   }
 
@@ -130,10 +129,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _progressDialog = ProgressDialog(context);
-    _progressDialog.style(
-      message: "Please wait..."
-    );
     return SafeArea(
         child: Scaffold(
           backgroundColor: Colors.white,
@@ -146,8 +141,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 backgroundColor: Colors.deepPurpleAccent,
                 onPressed: () async {
                   dismissKeyboard();
-                  _progressDialog.show();
-                  String status = await signUpUser().whenComplete(() => _progressDialog.hide());
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Center(child: CircularProgressIndicator(),);
+                      }
+                  );
+                  String status = await signUpUser().whenComplete(() => Navigator.of(context).pop());
                   if (status != "success") {
                     showUserSignUpException(status);
                     return;

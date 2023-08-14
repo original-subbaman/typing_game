@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:thumbing/firebase/firebase_authentication.dart';
 import 'package:thumbing/firebase/firebase_constants.dart';
 import 'package:thumbing/model/leaderboard_item.dart';
 import 'package:thumbing/model/player.dart';
 
 import '../model/league.dart';
-import '../utility/constants.dart';
 
 class MyCloudFirestore {
   static final db = FirebaseFirestore.instance;
@@ -94,7 +92,7 @@ class MyCloudFirestore {
           WPM: wpm,
         }).then(
           (value) => print("User best score updated!"),
-          onError: (e) => print("Error updating score!"),
+          onError: (e) => print("Error updating score! ${e.toString()}"),
         );
       } else {
         user.update({

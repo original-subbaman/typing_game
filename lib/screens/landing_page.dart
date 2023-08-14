@@ -1,38 +1,41 @@
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thumbing/firebase/firebase_firestore.dart';
+import 'package:thumbing/screens/error_screen.dart';
 import 'package:thumbing/screens/home_screen.dart';
+import 'package:thumbing/screens/loading.dart';
 import 'package:thumbing/screens/sign_in.dart';
 
-class Wrapper extends StatefulWidget{
+final authenticationProvider = Provider((ref){
+  return FirebaseAuth.instance;
+});
+
+final authStateProvider = StreamProvider((ref){
+ return ref.read(authenticationProvider).authStateChanges();
+});
+
+class Wrapper extends ConsumerStatefulWidget {
   static final kLandingPage = 'Landing Page';
   @override
-  State<Wrapper> createState() => _WrapperState();
+  _WrapperState createState() => _WrapperState();
 }
 
-class _WrapperState extends State<Wrapper>{
-  User? _user;
-  @override
-  void initState() {
-    FirebaseAuth.instance.authStateChanges().listen((user) =>{
-        if(user != null){
-          updateUserState(user)
-    }});
-    super.initState();
-  }
+class _WrapperState extends ConsumerState<Wrapper> {
+
+
+
   @override
   Widget build(BuildContext context) {
-    if(_user == null){
-      return SignInScreen();
-    }else{
-      return HomeScreen();
-    }
-  }
+    final _authState = ref.watch(authStateProvider);
+    return _authState.when(data: (data){
+      if(data != null){
+        return HomeScreen();
+      }else{
+        return SignInScreen();
+      }
+    }, error: (e, trace) => ErrorScreen(), loading: () => CircularProgressIndicator());
 
-  updateUserState(User user) {
-    setState(() {
-      _user = user;
-    });
   }
-
 }
