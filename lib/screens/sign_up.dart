@@ -60,7 +60,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<String> signUpUser() async {
-    print(_emailController.text.trim());
     return await MyFirebaseAuth.signUpUser(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim());

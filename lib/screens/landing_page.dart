@@ -2,10 +2,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:thumbing/firebase/firebase_firestore.dart';
 import 'package:thumbing/screens/error_screen.dart';
 import 'package:thumbing/screens/home_screen.dart';
-import 'package:thumbing/screens/loading.dart';
 import 'package:thumbing/screens/sign_in.dart';
 
 final authenticationProvider = Provider((ref){

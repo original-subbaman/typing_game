@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:thumbing/firebase/firebase_firestore.dart';
-import 'package:thumbing/model/leaderboard_item.dart';
 import 'package:thumbing/screens/leaderboard_screen.dart';
 import 'package:thumbing/utility/constants.dart';
 
@@ -62,14 +60,7 @@ class _LeaderboardState extends State<Leaderboard> {
     });
   }
 
-  @override
-  void initState() {
-    //Need to add one dummy item to the items list at the index 0 as a place holder for the header
-    //header is Rank, Player, WPM, ACC
-    items.add(LeaderboardItem(userName: "", leagueScore: 0, rank: 0, wpm: 0, acc: 0));
-    setLeagueData();
-    super.initState();
-  }
+
 
   @override
   Widget build(BuildContext context) {

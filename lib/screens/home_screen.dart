@@ -10,10 +10,10 @@ import 'package:thumbing/widgets/leaderboard.dart';
 import 'package:thumbing/widgets/single_value_card.dart';
 import 'package:thumbing/widgets/value_display_card.dart';
 
-import '../model/player.dart';
-
 final userNameProvider = StateProvider<String>((ref) => 'Player');
 final leagueScoreProvider = StateProvider<int>((ref) => 0);
+final wpmProvider = StateProvider((ref) => 0);
+final accProvider = StateProvider((ref) => 0);
 
 class HomeScreen extends ConsumerStatefulWidget {
   static const kHomeRoute = 'home';
@@ -25,31 +25,32 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final String wpmText = 'WPM';
   final String accText = 'Accuracy';
-  int wpmValueText = 0;
-  int accValueText = 0;
-  late String bestWPM;
-  late String bestAcc;
 
   _setUserDataToUI() async {
     await MyCloudFirestore.getUser().then((value) {
       if (value != null) {
-        print("user: ${value.userName} leagueScore : ${value.leagueScore}");
         ref.read(userNameProvider.notifier).update((state) => value.userName);
-        ref.read(leagueScoreProvider.notifier).update((state) => value.leagueScore);
+        ref
+            .read(leagueScoreProvider.notifier)
+            .update((state) => value.leagueScore);
       }
     });
   }
 
-  getLatestWPM() async {
-    return await CurrentBestScore.getLatestWPM();
+  _getLatestWPM() async {
+    return await CurrentBestScore.getLatestWPM().then((value){
+      if(value != null){
+        ref.read(wpmProvider.notifier).update((state) => value);
+      }
+    });
   }
 
-  getLatestAcc() async {
-    return await CurrentBestScore.getLatestAcc();
-  }
-
-  getLeaderboardStats() async {
-    return await MyCloudFirestore.getLeaderboard();
+  _getLatestAcc() async {
+    return await CurrentBestScore.getLatestAcc().then((value){
+      if(value != null){
+        ref.read(accProvider.notifier).update((state) => value);
+      }
+    });
   }
 
   getUser() async {
@@ -60,17 +61,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     super.initState();
     _setUserDataToUI();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+    _getLatestAcc();
+    _getLatestWPM();
   }
 
   @override
   Widget build(BuildContext context) {
     final userName = ref.watch(userNameProvider);
     final leagueScore = ref.watch(leagueScoreProvider);
+    final wpm = ref.watch(wpmProvider);
+    final acc = ref.watch(accProvider);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -126,51 +127,36 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   Flexible(
                     flex: 1,
-                    child: FutureBuilder(
-                        future: getLatestWPM(),
-                        builder: (context, snapshot) {
-                          var displayCard = ValueDisplayCard(
-                            titleText: wpmText,
-                            valueText: '0',
-                            titleTxtStyle: kCardTextStyle.copyWith(
-                              fontSize: 20,
-                              color: Colors.white,
-                            ),
-                            valueTxtStyle: kCardTextStyle.copyWith(
-                              fontSize: 60,
-                              color: Colors.white,
-                            ),
-                          );
-                          if (snapshot.hasData) {
-                            displayCard.valueText = snapshot.data.toString();
-                          }
-                          return displayCard;
-                        }),
+                    child: ValueDisplayCard(
+                      titleText: wpmText,
+                      valueText: '$wpm',
+                      titleTxtStyle: kCardTextStyle.copyWith(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
+                      valueTxtStyle: kCardTextStyle.copyWith(
+                        fontSize: 60,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                   SizedBox(
                     width: 10,
                   ),
                   Flexible(
-                      flex: 1,
-                      child: FutureBuilder(
-                          future: getLatestAcc(),
-                          builder: (context, snapshot) {
-                            var displayCard = ValueDisplayCard(
-                              titleText: accText,
-                              valueText: accValueText.toString(),
-                              bgColor: Colors.white,
-                              titleTxtStyle: kCardTextStyle.copyWith(
-                                  fontSize: 20, color: Colors.lightBlue),
-                              valueTxtStyle: kCardTextStyle.copyWith(
-                                fontSize: 60,
-                                color: Colors.lightBlue,
-                              ),
-                            );
-                            if (snapshot.hasData) {
-                              displayCard.valueText = snapshot.data.toString();
-                            }
-                            return displayCard;
-                          })),
+                    flex: 1,
+                    child: ValueDisplayCard(
+                      titleText: accText,
+                      valueText: '$acc',
+                      bgColor: Colors.white,
+                      titleTxtStyle: kCardTextStyle.copyWith(
+                          fontSize: 20, color: Colors.lightBlue),
+                      valueTxtStyle: kCardTextStyle.copyWith(
+                        fontSize: 60,
+                        color: Colors.lightBlue,
+                      ),
+                    ),
+                  ),
                 ],
               ),
               SizedBox(
@@ -181,7 +167,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 height: 15.0,
               ),
               Expanded(
-                 child: Leaderboard(true, BorderRadius.circular(20)),
+                child: Leaderboard(true, BorderRadius.circular(20)),
               ),
             ],
           ),

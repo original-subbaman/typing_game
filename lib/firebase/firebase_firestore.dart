@@ -193,8 +193,6 @@ class MyCloudFirestore {
         if (player.userName == MyCloudFirestore.currentUser) {
           return player.rank;
         }
-
-        print("${player.userName} == ${MyCloudFirestore.currentUser}");
       }
     });
   }

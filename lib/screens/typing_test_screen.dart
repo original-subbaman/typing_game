@@ -15,6 +15,7 @@ class TypingTestScreen extends StatefulWidget {
   static const kTypingScreenRoute = 'typing_screen';
   TestSettings gameSetting = TestSettings();
   TypingTestScreen(this.gameSetting);
+
   @override
   _TypingTestScreenState createState() => _TypingTestScreenState();
 }
@@ -227,6 +228,7 @@ class _TypingTestScreenState extends State<TypingTestScreen>
     CurrentBestScore.setLatestAcc(acc); //Saving latest accuracy score locally
     CurrentBestScore.setLatestWPM(wpm); //Saving latest wpm score locally
   }
+
   _createCupertinoDialog() {
     return CupertinoAlertDialog(
       title: Text('Well Done!'),
