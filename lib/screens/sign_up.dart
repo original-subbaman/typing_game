@@ -79,7 +79,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       userName: _userNameController.text.trim(),
       acc: 0,
       wpm: 0,
-      bestRank: 1000.toString(),
+      bestRank: 1000,
     );
 
     final userRef = MyCloudFirestore.getUserDocumentReference(

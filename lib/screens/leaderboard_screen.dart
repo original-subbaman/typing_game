@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thumbing/firebase/firebase_firestore.dart';
+import 'package:thumbing/screens/home_screen.dart';
 
-import '../utility/constants.dart';
 import '../widgets/leaderboard.dart';
 
-class LeaderboardScreen extends StatefulWidget {
+final userRankProvider = StateProvider((ref) => 1000);
+
+class LeaderboardScreen extends ConsumerStatefulWidget{
   static final kLeaderboardScreen = "LeaderboardScreen";
 
   @override
-  State<StatefulWidget> createState() => _LeaderboardScreenState();
+  ConsumerState<LeaderboardScreen> createState() => _LeaderboardScreenState();
 }
 
 class OvalDisplayCard extends StatelessWidget {
@@ -39,37 +42,34 @@ class OvalDisplayCard extends StatelessWidget {
   }
 }
 
-class _LeaderboardScreenState extends State<LeaderboardScreen> {
-  var userName;
-  var avgWPM;
-  var avgAcc;
-  var bestRank;
+class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
 
-  setUserData() async {
+  _setUserData() async {
     await MyCloudFirestore.getUser().then((value) {
-      setState(() {
-        userName = value?.userName;
-        avgWPM = value?.wpm;
-        avgAcc = value?.acc;
-      });
+      if(value != null){
+        ref.read(userNameProvider.notifier).update((state) => value.userName);
+        ref.read(wpmProvider.notifier).update((state) => value.wpm);
+        ref.read(accProvider.notifier).update((state) => value.acc);
+        print("best rank: ${value.bestRank}");
+        ref.read(userRankProvider.notifier).update((state) => value.bestRank);
+      }
     });
   }
 
 
   @override
   void initState() {
-    setUserData();
-    MyCloudFirestore.getUserRank().then((value){
-      setState(() {
-        bestRank = value;
-        print('Best rank $value');
-      });
-    });
+    _setUserData();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final userName = ref.watch(userNameProvider);
+    final wpm = ref.watch(wpmProvider);
+    final acc = ref.watch(accProvider);
+    final bestRank = ref.watch(userRankProvider);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -115,10 +115,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         OvalDisplayCard(
-                          infoText: 'Avg WPM: $avgWPM',
+                          infoText: 'Avg WPM: $wpm',
                         ),
                         OvalDisplayCard(
-                          infoText: 'Avg Acc: $avgAcc',
+                          infoText: 'Avg Acc: $acc',
                         ),
                       ],
                     )

@@ -39,7 +39,7 @@ class MyCloudFirestore {
           userName: data[USER_NAME],
           acc: data[ACC],
           wpm: data[WPM],
-          bestRank: data[BEST_RANK].toString(),
+          bestRank: data[BEST_RANK],
         );
       }
     });
@@ -151,7 +151,8 @@ class MyCloudFirestore {
       'user_name': newPlayer.userName,
       'league_score': newPlayer.leagueScore,
       'acc': 0,
-      'wpm': 0
+      'wpm': 0,
+      'best_rank': newPlayer.bestRank,
     };
     await _league
         .doc(newPlayer.uid)

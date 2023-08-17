@@ -1,69 +1,80 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thumbing/firebase/firebase_firestore.dart';
+import 'package:thumbing/model/leaderboard_item.dart';
+import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/screens/leaderboard_screen.dart';
 import 'package:thumbing/utility/constants.dart';
 
-class Leaderboard extends StatefulWidget {
+
+final leagueProvider = StateProvider((ref) => []);
+class Leaderboard extends ConsumerStatefulWidget{
   final bool showExpand;
   final borderRadius;
 
   Leaderboard(this.showExpand, this.borderRadius);
 
   @override
-  State<Leaderboard> createState() => _LeaderboardState();
+  ConsumerState<Leaderboard> createState() => _LeaderboardState();
 }
 
-class _LeaderboardState extends State<Leaderboard> {
-  var items = [];
+class _LeaderboardState extends ConsumerState<Leaderboard> {
 
   var trailingItemTextStyle = kCardTextStyle.copyWith(
       fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold);
 
-  TrailingText(data) {
+  TrailingText(data, textStyle) {
     return Text(
       data.toString(),
-      style: trailingItemTextStyle,
+      style: textStyle,
     );
   }
 
-  HeaderText(header){
+  HeaderText(header) {
     return Text(
       header,
       style: trailingItemTextStyle.copyWith(color: Colors.deepPurpleAccent),
     );
   }
 
-  setPlayerRank() {
-    for (var i = 1; i < items.length; i++) {
-      if (MyCloudFirestore.currentUser == items[i].userName) {
+  /*
+  * For each player rank is set has index in which they appear in the array + 1
+  * */
+  _setPlayerRank() {
+    final league = ref.read(leagueProvider);
+    for (var i = 0; i < league.length; i++) {
+      LeaderboardItem item = league[i] as LeaderboardItem;
+      if (MyCloudFirestore.currentUser == item.userName) {
         MyCloudFirestore.currentRank = i + 1;
       }
     }
   }
 
-  setLeagueData() async {
+  _setLeagueData() async {
     await MyCloudFirestore.getLeaderboard().then((value) {
-      setState(() {
-         items = items + value;
-         setPlayerRank();
-      });
+      ref.read(leagueProvider.notifier).update((state) => value);
+      _setPlayerRank();
     });
   }
 
   refreshLeagueData() async {
     await MyCloudFirestore.getLeaderboard().then((value) {
-      setState(() {
-        items.removeRange(1, items.length);
-        items = items + value;
-        setPlayerRank();
-      });
+      ref.read(leagueProvider.notifier).update((state) => value);
+      _setPlayerRank();
     });
   }
 
-
+  @override
+  void initState() {
+    _setLeagueData();
+    _setPlayerRank();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final leagueData = ref.watch(leagueProvider);
+
     return Material(
       elevation: 10.0,
       color: kLightBlueAccent,
@@ -117,46 +128,25 @@ class _LeaderboardState extends State<Leaderboard> {
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: items.length,
+                  itemCount: leagueData.length,
                   physics: BouncingScrollPhysics(
                       parent: AlwaysScrollableScrollPhysics()),
                   itemBuilder: (_, index) {
-                    var user = items[index];
-                    if(index == 0){
-                      return ListTile(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(width: 2, color: Colors.deepPurpleAccent),
-                          borderRadius: BorderRadius.circular(20)
-                        ),
-                        selectedTileColor: Colors.white,
-                        selected: true,
-                        leading: HeaderText("Rank"),
-                        title: HeaderText("Player"),
-                        trailing: Wrap(
-                          children: [
-                            HeaderText("wpm"),
-                            HeaderText("acc"),
-                          ],
-                          spacing: 8.0,
-                        ),
-                      );
-                    }else{
-                      return ListTile(
-                        leading: TrailingText(user.rank),
-                        title: Text(
-                          user.userName,
-                          style: kCardTextStyle,
-                        ),
-                        trailing: Wrap(
-                          children: <Widget>[
-                            TrailingText(user.wpm),
-                            TrailingText(user.acc),
-                          ],
-                          spacing: 20.0,
-                        ),
-                      );
-                    }
-
+                    var user = leagueData[index];
+                    return ListTile(
+                      leading: TrailingText(user.rank, trailingItemTextStyle),
+                      title: Text(
+                        user.userName,
+                        style: kCardTextStyle,
+                      ),
+                      trailing: Wrap(
+                        children: <Widget>[
+                          TrailingText("${user.wpm} w/m", trailingItemTextStyle),
+                          TrailingText("${user.acc} %", trailingItemTextStyle),
+                        ],
+                        spacing: 20.0,
+                      ),
+                    );
                   },
                 ),
               )

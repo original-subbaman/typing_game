@@ -10,7 +10,7 @@ class Player {
   final String userName;
   final int acc;
   final int wpm;
-  final String bestRank;
+  final int bestRank;
 
   Player( {required this.uid, required this.fullName, required this.email, required this.leagueScore,
       required this.userName, required this.acc, required this.wpm, required this.bestRank});
