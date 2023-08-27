@@ -5,6 +5,7 @@ import 'package:thumbing/screens/typing_test_screen.dart';
 import 'package:thumbing/utility/constants.dart';
 
 import '../model/test_settings.dart';
+import '../utility/colors.dart';
 
 class TestSetting extends StatefulWidget {
   static const String kTestSetting = "kTestSetting";
@@ -116,8 +117,8 @@ class _TestSettingState extends State<TestSetting> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                onPrimary: Colors.white,
-                primary: Colors.lightBlue,
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.lightBlue,
                 minimumSize: Size(double.maxFinite, 48),
               ),
               child: Text(
@@ -137,7 +138,7 @@ class _TestSettingState extends State<TestSetting> {
 }
 
 class RadioLabel extends StatelessWidget {
-  String labelText;
+  final String labelText;
 
   RadioLabel({required this.labelText});
 
@@ -154,7 +155,7 @@ class RadioLabel extends StatelessWidget {
 }
 
 class SettingTitleText extends StatelessWidget {
-  String titleText;
+  final String titleText;
 
   SettingTitleText({
     required this.titleText,

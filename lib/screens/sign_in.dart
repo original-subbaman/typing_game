@@ -5,8 +5,8 @@ import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/screens/sign_up.dart';
 import 'package:thumbing/utility/constants.dart';
 import 'package:thumbing/widgets/input_form_field.dart';
-import 'package:thumbing/widgets/app_banner.dart';
 import '../firebase/firebase_authentication.dart';
+import '../utility/colors.dart';
 
 class SignInScreen extends StatefulWidget {
   static final kSignInScreen = 'kSignInScreen';
@@ -19,7 +19,6 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-
   late FocusNode _emailFocusNode;
   late FocusNode _passwordFocusNode;
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -27,13 +26,14 @@ class _SignInScreenState extends State<SignInScreen> {
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
 
-
   Color getColorOnFocus(FocusNode focusNode) {
-    return focusNode.hasFocus ? Colors.deepPurpleAccent : Colors.grey;
+    return focusNode.hasFocus ? kLightBlueAccent : Colors.grey;
   }
 
   void _requestFocus(FocusNode focusNode) {
-    FocusScope.of(context).requestFocus(focusNode);
+    setState(() {
+      FocusScope.of(context).requestFocus(focusNode);
+    });
   }
 
   void disposeTextControllers() {
@@ -44,6 +44,26 @@ class _SignInScreenState extends State<SignInScreen> {
   void disposeFocusNodes() {
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
+  }
+
+  void _showProgressDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+  }
+
+  Future<String> _signInUser() async {
+    String status = await MyFirebaseAuth.signInUser(
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim())
+        .whenComplete(() {
+      Navigator.of(context).pop();
+    });
+    return status;
   }
 
   void handleSignInExceptions(String status) {
@@ -62,15 +82,52 @@ class _SignInScreenState extends State<SignInScreen> {
     }
   }
 
+  Text _loginInfoText() {
+    return Text(
+      'Log in with your email id to get started',
+      style: TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.w300,
+        fontSize: 20.0,
+      ),
+      textAlign: TextAlign.center,
+    );
+  }
+
+  RichText _signUpText() {
+    return RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        style: TextStyle(
+          fontSize: 18,
+          color: Colors.white,
+        ),
+        children: [
+          TextSpan(text: 'Don\'t have an account? '),
+          TextSpan(
+            text: 'Sign Up',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.underline,
+            ),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                Navigator.pushNamed(context, SignUpScreen.kSignUpScreen);
+              },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
+    super.initState();
     _emailFocusNode = FocusNode();
     _passwordFocusNode = FocusNode();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
-    super.initState();
-
   }
 
   @override
@@ -79,12 +136,10 @@ class _SignInScreenState extends State<SignInScreen> {
     disposeFocusNodes();
     disposeTextControllers();
     super.dispose();
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     return SafeArea(
         child: Scaffold(
       backgroundColor: Colors.white,
@@ -95,128 +150,91 @@ class _SignInScreenState extends State<SignInScreen> {
         child: FittedBox(
           child: FloatingActionButton(
             child: Icon(Icons.login),
-            backgroundColor: Colors.deepPurpleAccent,
+            backgroundColor: kLightBlueAccent,
             onPressed: () async {
               dismissKeyboard();
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return Center(child: CircularProgressIndicator(),);
-                }
-              );
-              String status = await MyFirebaseAuth.signInUser(
-                      email: _emailController.text.trim(),
-                      password: _passwordController.text.trim())
-                  .whenComplete(() {
-                Navigator.of(context).pop();
-              });
+              _showProgressDialog();
+              String status = await _signInUser();
               handleSignInExceptions(status);
             },
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Flexible(
-              flex: 2,
-              fit: FlexFit.loose,
-              child: Container(
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      AppBanner(),
-                      SizedBox(
-                        height: 40,
+      body: Stack(children: [
+        Container(
+          height: double.infinity,
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: shades,
+              stops: [0.1, 0.4, 0.7, 0.9],
+            ),
+          ),
+        ),
+        SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.symmetric(
+            vertical: 120.0,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'Welcome',
+                      style: TextStyle(
+                        fontSize: 42,
+                        color: Colors.white,
                       ),
-                      Text(
-                        'Log in with your email id to get started',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w300,
-                          fontSize: 20.0,
-
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Card(
-                        elevation: 4,
-                        child: InputFormField(
-                          focusNode: _emailFocusNode,
-                          prefixIcon: Icon(Icons.email,
-                              color: getColorOnFocus(_emailFocusNode)),
-                          onTap: () => _requestFocus(_emailFocusNode),
-                          hintText: 'someone@emaill.com',
-                          labelText: 'Email',
-                          labelStyle: TextStyle(
-                            color: getColorOnFocus(_emailFocusNode),
-                          ),
-                          controller: _emailController,
-                          obscureText: false,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Card(
-                        elevation: 4,
-                        child: InputFormField(
-                          focusNode: _passwordFocusNode,
-                          prefixIcon: Icon(Icons.password,
-                              color: getColorOnFocus(_passwordFocusNode)),
-                          onTap: () => _requestFocus(_passwordFocusNode),
-                          hintText: 'Password',
-                          labelText: 'Password',
-                          labelStyle: TextStyle(
-                            color: getColorOnFocus(_passwordFocusNode),
-                          ),
-                          controller: _passwordController,
-                          obscureText: true,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.grey,
-                            ),
-                            children: [
-                              TextSpan(text: 'Don\'t have an account? '),
-                              TextSpan(
-                                  text: 'Sign Up',
-                                  style: TextStyle(
-                                    color: Colors.blueAccent,
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      Navigator.pushNamed(
-                                          context, SignUpScreen.kSignUpScreen);
-                                    }),
-                            ]),
-                      ),
-                    ],
-                  ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    _loginInfoText(),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    InputFormField(
+                      focusNode: _emailFocusNode,
+                      prefixIcon: Icon(Icons.email,
+                          color: getColorOnFocus(_emailFocusNode)),
+                      onTap: () => _requestFocus(_emailFocusNode),
+                      hintText: 'someone@emaill.com',
+                      controller: _emailController,
+                      obscureText: false,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    InputFormField(
+                      focusNode: _passwordFocusNode,
+                      prefixIcon: Icon(Icons.password,
+                          color: getColorOnFocus(_passwordFocusNode)),
+                      onTap: () => _requestFocus(_passwordFocusNode),
+                      hintText: 'Password',
+                      controller: _passwordController,
+                      obscureText: true,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    _signUpText(),
+                  ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
+      ]),
     ));
   }
 }
-

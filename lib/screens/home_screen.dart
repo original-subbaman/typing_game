@@ -10,6 +10,8 @@ import 'package:thumbing/widgets/leaderboard.dart';
 import 'package:thumbing/widgets/single_value_card.dart';
 import 'package:thumbing/widgets/value_display_card.dart';
 
+import '../utility/colors.dart';
+
 final userNameProvider = StateProvider<String>((ref) => 'Player');
 final leagueScoreProvider = StateProvider<int>((ref) => 0);
 final wpmProvider = StateProvider((ref) => 0);

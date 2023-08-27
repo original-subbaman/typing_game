@@ -10,4 +10,3 @@ final EMAIL = "email";
 final USER_NAME = "user_name";
 final BEST_RANK = "best_rank";
 
-

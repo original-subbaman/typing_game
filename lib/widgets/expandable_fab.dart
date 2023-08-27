@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
-import 'package:thumbing/utility/constants.dart';
+import 'package:flutter/material.dart';
+
+import '../utility/colors.dart';
 class ExpandableFab extends StatefulWidget {
   final bool initialOpen;
   final double distance;
@@ -23,7 +24,7 @@ class _ExpandableFabState extends State<ExpandableFab> with SingleTickerProvider
   @override
   void initState() {
     super.initState();
-    _open = widget.initialOpen ?? false;
+    _open = widget.initialOpen;
     _controller = AnimationController(
       value: _open ? 1.0 : 0.0,
       duration: const Duration(milliseconds: 250),

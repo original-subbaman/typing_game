@@ -1,11 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:thumbing/utility/constants.dart';
 
+import '../utility/colors.dart';
+
 class ValueDisplayCard extends StatelessWidget {
   final String titleText;
-  String valueText;
+  final String valueText;
   final Color? bgColor;
   final titleTxtStyle;
   final valueTxtStyle;

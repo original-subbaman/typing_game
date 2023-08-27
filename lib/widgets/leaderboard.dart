@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thumbing/firebase/firebase_firestore.dart';
 import 'package:thumbing/model/leaderboard_item.dart';
-import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/screens/leaderboard_screen.dart';
 import 'package:thumbing/utility/constants.dart';
+
+import '../utility/colors.dart';
 
 
 final leagueProvider = StateProvider((ref) => []);
