@@ -57,7 +57,7 @@ class _SignInScreenState extends State<SignInScreen> {
         });
   }
 
-  Future<String> _signInUser() async {
+  Future<String> _signInUserWithEmailPassword() async {
     String status = await MyFirebaseAuth.signInUser(
             email: _emailController.text.trim(),
             password: _passwordController.text.trim())
@@ -65,6 +65,11 @@ class _SignInScreenState extends State<SignInScreen> {
       Navigator.of(context).pop();
     });
     return status;
+  }
+
+  void _signInUserWithGoogleSignIn() async{
+    String status = await MyFirebaseAuth.signInWithGoogle();
+    print("Sign in status: " + status);
   }
 
   void handleSignInExceptions(String status) {
@@ -104,7 +109,7 @@ class _SignInScreenState extends State<SignInScreen> {
           fontSize: 16,
           decoration: TextDecoration.underline,
         ),
-        textAlign: TextAlign.center,
+        textAlign: TextAlign.right,
       ),
       onTap: () => Navigator.pushNamed(context, ForgotPasswordScreen.kForgotPasswordScreen),
     );
@@ -170,7 +175,7 @@ class _SignInScreenState extends State<SignInScreen> {
             onPressed: () async {
               dismissKeyboard();
               _showProgressDialog();
-              String status = await _signInUser();
+              String status = await _signInUserWithEmailPassword();
               handleSignInExceptions(status);
             },
           ),
@@ -244,6 +249,36 @@ class _SignInScreenState extends State<SignInScreen> {
                       height: 20,
                     ),
                     _forgotText(context),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Text(
+                      "or Sign in With",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    GestureDetector(
+                      onTap: ()=> print("tapped"),
+                      child: Container(
+                        padding: EdgeInsets.all(20),
+                        margin: EdgeInsets.symmetric(horizontal: 120),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white),
+                          borderRadius: BorderRadius.circular(16),
+                          color: Colors.grey[300],
+                        ),
+                        child: Image.asset(
+                          "assets/icons/google_icon.png",
+                          height: 50,
+                        ),
+                      ),
+                    ),
                     SizedBox(
                       height: 20,
                     ),
