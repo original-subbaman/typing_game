@@ -21,11 +21,6 @@ class MyFirebaseAuth {
     FirebaseAuth.instance
         .authStateChanges()
         .listen((User user) {
-      if (user == null) {
-        print('User is currently signed out!');
-      } else {
-        print('User is signed in!');
-      }
       loggedInUser = user;
     } as void Function(User? event)?);
     return loggedInUser;
@@ -37,6 +32,7 @@ class MyFirebaseAuth {
           email: email,
           password: password,
       ).then((value) => currentUserId = FirebaseAuth.instance.currentUser?.uid);
+
     } on FirebaseAuthException catch (e) {
       status = e.code;
     }

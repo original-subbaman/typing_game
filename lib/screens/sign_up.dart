@@ -60,7 +60,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<String> signUpUser() async {
-    print(_emailController.text.trim());
     return await MyFirebaseAuth.signUpUser(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim());
@@ -85,14 +84,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     final userRef = MyCloudFirestore.getUserDocumentReference(
         uid: FirebaseAuth.instance.currentUser?.uid);
-
+    showDialog(context: context, builder: (context) => Center(child: CircularProgressIndicator()));
     userRef
         .set(newUser)
         .onError(
             (error, stackTrace) => showCreateUserException(error as String))
         .then((value) {
       MyCloudFirestore.addNewUserToLeague(newPlayer: newUser);
-      Navigator.pushReplacementNamed(context, HomeScreen.kHomeRoute);
+      Navigator.of(context).pop();
+      Navigator.popAndPushNamed(context, HomeScreen.kHomeRoute);
     });
   }
 
@@ -128,161 +128,167 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-      backgroundColor: Colors.white,
-      floatingActionButton: SizedBox(
-        width: 70,
-        height: 70,
-        child: FittedBox(
-          child: FloatingActionButton(
-            child: Icon(Icons.login),
-            backgroundColor: kLightBlueAccent,
-            onPressed: () async {
-              dismissKeyboard();
-              String status =
-                  await signUpUser().whenComplete(() => print("Success"));
-              if (status != "success") {
-                showUserSignUpException(status);
-                return;
-              }
-              createNewUser();
-            },
-          ),
-        ),
-      ),
-      body: Stack(children: [
-        Container(
-          height: double.infinity,
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: shades,
-              stops: [0.1, 0.4, 0.7, 0.9],
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.popAndPushNamed(context, SignInScreen.kSignInScreen);
+        return true;
+      },
+      child: SafeArea(
+          child: Scaffold(
+        backgroundColor: Colors.white,
+        floatingActionButton: SizedBox(
+          width: 70,
+          height: 70,
+          child: FittedBox(
+            child: FloatingActionButton(
+              child: Icon(Icons.login),
+              backgroundColor: kLightBlueAccent,
+              onPressed: () async {
+                dismissKeyboard();
+                String status =
+                    await signUpUser().whenComplete(() => print("Success"));
+                if (status != "success") {
+                  showUserSignUpException(status);
+                  return;
+                }
+                createNewUser();
+              },
             ),
           ),
         ),
-        SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.symmetric(
-            vertical: 120,
-          ),
-
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'Welcome',
-                      style: TextStyle(
-                        fontSize: 42,
-                        color: Colors.white,
-
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      'Sign-up to get started',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w200,
-                        fontSize: 20.0,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    InputFormField(
-                      focusNode: _fullNameFocusNode,
-                      prefixIcon: Icon(Icons.emoji_emotions_outlined,
-                          color: getColorOnFocus(_fullNameFocusNode)),
-                      onTap: () => _requestFocus(_fullNameFocusNode),
-                      hintText: 'Your full name',
-                      controller: _fullNameController,
-                      obscureText: false,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    InputFormField(
-                      focusNode: _usernameFocusNode,
-                      prefixIcon: Icon(Icons.account_circle_outlined,
-                          color: getColorOnFocus(_usernameFocusNode)),
-                      onTap: () => _requestFocus(_usernameFocusNode),
-                      hintText: 'Your cool username',
-                      controller: _userNameController,
-                      obscureText: false,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    InputFormField(
-                      focusNode: _emailFocusNode,
-                      prefixIcon: Icon(Icons.email,
-                          color: getColorOnFocus(_emailFocusNode)),
-                      onTap: () => _requestFocus(_emailFocusNode),
-                      hintText: 'someone@email.com',
-                      controller: _emailController,
-                      obscureText: false,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    InputFormField(
-                      focusNode: _passwordFocusNode,
-                      prefixIcon: Icon(Icons.password,
-                          color: getColorOnFocus(_passwordFocusNode)),
-                      onTap: () => _requestFocus(_passwordFocusNode),
-                      hintText: 'Password',
-                      controller: _passwordController,
-                      obscureText: true,
-                    ),
-                    SizedBox(
-                      height: 40,
-                    ),
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
-                          children: [
-                            TextSpan(text: 'Already have an account? '),
-                            TextSpan(
-                                text: 'Sign In',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  decoration: TextDecoration.underline,
-                                ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.pushNamed(
-                                        context, SignInScreen.kSignInScreen);
-                                  }),
-                          ]),
-                    ),
-                  ],
-                ),
+        body: Stack(children: [
+          Container(
+            height: double.infinity,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: shades,
+                stops: [0.1, 0.4, 0.7, 0.9],
               ),
-            ],
+            ),
           ),
-        ),
-      ]),
-    ));
+          SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(
+              vertical: 120,
+            ),
+
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        'Welcome',
+                        style: TextStyle(
+                          fontSize: 42,
+                          color: Colors.white,
+
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'Sign-up to get started',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w200,
+                          fontSize: 20.0,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      InputFormField(
+                        focusNode: _fullNameFocusNode,
+                        prefixIcon: Icon(Icons.emoji_emotions_outlined,
+                            color: getColorOnFocus(_fullNameFocusNode)),
+                        onTap: () => _requestFocus(_fullNameFocusNode),
+                        hintText: 'Your full name',
+                        controller: _fullNameController,
+                        obscureText: false,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      InputFormField(
+                        focusNode: _usernameFocusNode,
+                        prefixIcon: Icon(Icons.account_circle_outlined,
+                            color: getColorOnFocus(_usernameFocusNode)),
+                        onTap: () => _requestFocus(_usernameFocusNode),
+                        hintText: 'Your cool username',
+                        controller: _userNameController,
+                        obscureText: false,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      InputFormField(
+                        focusNode: _emailFocusNode,
+                        prefixIcon: Icon(Icons.email,
+                            color: getColorOnFocus(_emailFocusNode)),
+                        onTap: () => _requestFocus(_emailFocusNode),
+                        hintText: 'someone@email.com',
+                        controller: _emailController,
+                        obscureText: false,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      InputFormField(
+                        focusNode: _passwordFocusNode,
+                        prefixIcon: Icon(Icons.password,
+                            color: getColorOnFocus(_passwordFocusNode)),
+                        onTap: () => _requestFocus(_passwordFocusNode),
+                        hintText: 'Password',
+                        controller: _passwordController,
+                        obscureText: true,
+                      ),
+                      SizedBox(
+                        height: 40,
+                      ),
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                            children: [
+                              TextSpan(text: 'Already have an account? '),
+                              TextSpan(
+                                  text: 'Sign In',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Navigator.pushNamed(
+                                          context, SignInScreen.kSignInScreen);
+                                    }),
+                            ]),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ]),
+      )),
+    );
   }
 
   void disposeFocusNodes() {

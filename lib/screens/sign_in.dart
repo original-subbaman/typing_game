@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:thumbing/screens/forgot_password.dart';
 import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/screens/sign_up.dart';
 import 'package:thumbing/utility/constants.dart';
@@ -94,6 +95,21 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
+  GestureDetector _forgotText(BuildContext context) {
+    return GestureDetector(
+      child: Text(
+        'Forgot Password?',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          decoration: TextDecoration.underline,
+        ),
+        textAlign: TextAlign.center,
+      ),
+      onTap: () => Navigator.pushNamed(context, ForgotPasswordScreen.kForgotPasswordScreen),
+    );
+  }
+
   RichText _signUpText() {
     return RichText(
       textAlign: TextAlign.center,
@@ -113,7 +129,7 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                Navigator.pushNamed(context, SignUpScreen.kSignUpScreen);
+                Navigator.popAndPushNamed(context, SignUpScreen.kSignUpScreen);
               },
           ),
         ],
@@ -227,6 +243,10 @@ class _SignInScreenState extends State<SignInScreen> {
                     SizedBox(
                       height: 20,
                     ),
+                    _forgotText(context),
+                    SizedBox(
+                      height: 20,
+                    ),
                     _signUpText(),
                   ],
                 ),
@@ -237,4 +257,6 @@ class _SignInScreenState extends State<SignInScreen> {
       ]),
     ));
   }
+
+
 }

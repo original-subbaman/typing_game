@@ -43,6 +43,7 @@ dependencies:
   word_generator: ^0.4.3
   riverpod: ^2.3.6
   flutter_riverpod: ^2.3.6
+  email_validator: ^2.1.16
 
 dev_dependencies:
   flutter_test:

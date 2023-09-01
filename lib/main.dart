@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:thumbing/screens/forgot_password.dart';
 import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/screens/landing_page.dart';
 import 'package:thumbing/screens/leaderboard_screen.dart';
@@ -27,6 +27,7 @@ void main() async{
           SignInScreen.kSignInScreen: (context) => SignInScreen(),
           SignUpScreen.kSignUpScreen: (context) => SignUpScreen(),
           LeaderboardScreen.kLeaderboardScreen: (context) => LeaderboardScreen(),
+          ForgotPasswordScreen.kForgotPasswordScreen: (context) => ForgotPasswordScreen(),
           //LeagueScreen.kLeagueScreen: (context) => LeagueScreen(),
           //CreateNewLeagueScreen.kCreateNewLeagueScreen: (context) => CreateNewLeagueScreen(),
         }
