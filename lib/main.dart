@@ -5,8 +5,8 @@ import 'package:thumbing/screens/forgot_password.dart';
 import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/screens/landing_page.dart';
 import 'package:thumbing/screens/leaderboard_screen.dart';
-import 'package:thumbing/screens/profile_page.dart';
-import 'package:thumbing/screens/sign_in.dart';
+import 'package:thumbing/screens/profile/profile_page.dart';
+import 'package:thumbing/screens/sign_in/sign_in.dart';
 import 'package:thumbing/screens/sign_up.dart';
 import 'package:thumbing/screens/test_settings.dart';
 

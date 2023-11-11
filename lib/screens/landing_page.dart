@@ -4,15 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:thumbing/screens/error_screen.dart';
 import 'package:thumbing/screens/home_screen.dart';
-import 'package:thumbing/screens/sign_in.dart';
+import 'package:thumbing/screens/sign_in/sign_in.dart';
 
-final authenticationProvider = Provider((ref){
-  return FirebaseAuth.instance;
-});
+import '../providers/auth_provider.dart';
 
-final authStateProvider = StreamProvider((ref){
- return ref.read(authenticationProvider).authStateChanges();
-});
 
 class Wrapper extends ConsumerStatefulWidget {
   static final kLandingPage = 'Landing Page';
@@ -21,9 +16,6 @@ class Wrapper extends ConsumerStatefulWidget {
 }
 
 class _WrapperState extends ConsumerState<Wrapper> {
-
-
-
   @override
   Widget build(BuildContext context) {
     final _authState = ref.watch(authStateProvider);
@@ -33,7 +25,7 @@ class _WrapperState extends ConsumerState<Wrapper> {
       }else{
         return SignInScreen();
       }
-    }, error: (e, trace) => ErrorScreen(), loading: () => CircularProgressIndicator());
+    }, error: (e, trace) => SignInScreen(), loading: () => CircularProgressIndicator());
 
   }
 }

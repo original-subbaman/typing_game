@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:thumbing/firebase/firebase_firestore.dart';
 import 'package:thumbing/screens/home_screen.dart';
-import 'package:thumbing/screens/sign_in.dart';
+import 'package:thumbing/screens/sign_in/sign_in.dart';
 import 'package:thumbing/firebase/firebase_authentication.dart';
 import 'package:thumbing/utility/current_best_score.dart';
 import 'package:thumbing/widgets/input_form_field.dart';
@@ -59,11 +59,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
   }
 
-  Future<String> signUpUser() async {
+  /*Future<String> signUpUser() async {
     return await MyFirebaseAuth.signUpUser(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim());
-  }
+  }*/
 
   void createNewUser() async {
     CurrentBestScore.setLatestWPM(
@@ -87,8 +87,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     showDialog(context: context, builder: (context) => Center(child: CircularProgressIndicator()));
     userRef
         .set(newUser)
-        .onError(
-            (error, stackTrace) => showCreateUserException(error as String))
+        /*.onError(
+            (error, stackTrace) => //showCreateUserException(error as String))*/
         .then((value) {
       MyCloudFirestore.addNewUserToLeague(newPlayer: newUser);
       Navigator.of(context).pop();
@@ -115,16 +115,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  showCreateUserException(String status) {
-    switch (status) {
-      case "success":
-        Navigator.popAndPushNamed(context, HomeScreen.kHomeRoute);
-        break;
-      default:
-        showSnackBar(msg: "Error creating user. Try again.", context: context);
-        MyFirebaseAuth.deleteCurrentUser();
-    }
-  }
+  // showCreateUserException(String status) {
+  //   switch (status) {
+  //     case "success":
+  //       Navigator.popAndPushNamed(context, HomeScreen.kHomeRoute);
+  //       break;
+  //     default:
+  //       showSnackBar(msg: "Error creating user. Try again.", context: context);
+  //       MyFirebaseAuth.deleteCurrentUser();
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -145,12 +145,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
               backgroundColor: kLightBlueAccent,
               onPressed: () async {
                 dismissKeyboard();
-                String status =
-                    await signUpUser().whenComplete(() => print("Success"));
-                if (status != "success") {
-                  showUserSignUpException(status);
-                  return;
-                }
+                /*String status =
+                    await signUpUser().whenComplete(() => print("Success"));*/
+                // if (status != "success") {
+                //   showUserSignUpException(status);
+                //   return;
+                // }
                 createNewUser();
               },
             ),

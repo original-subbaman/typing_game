@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:thumbing/firebase/firebase_firestore.dart';
-import 'package:thumbing/screens/profile_page.dart';
+import 'package:thumbing/screens/profile/profile_page.dart';
 import 'package:thumbing/screens/test_settings.dart';
 import 'package:thumbing/utility/constants.dart';
 import 'package:thumbing/utility/current_best_score.dart';
