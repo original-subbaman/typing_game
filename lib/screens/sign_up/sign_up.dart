@@ -5,12 +5,15 @@ import 'package:thumbing/firebase/firebase_firestore.dart';
 import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/screens/sign_in/sign_in.dart';
 import 'package:thumbing/firebase/firebase_authentication.dart';
+import 'package:thumbing/screens/sign_up/sign_in_text.dart';
 import 'package:thumbing/utility/current_best_score.dart';
 import 'package:thumbing/widgets/input_form_field.dart';
 import 'package:thumbing/utility/constants.dart';
+import 'package:thumbing/widgets/secondary_title_text.dart';
+import 'package:thumbing/widgets/welcome_text.dart';
 
-import '../model/player.dart';
-import '../utility/colors.dart';
+import '../../model/player.dart';
+import '../../utility/colors.dart';
 
 class SignUpScreen extends StatefulWidget {
   static final kSignUpScreen = 'kSignUpScreen';
@@ -151,7 +154,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 //   showUserSignUpException(status);
                 //   return;
                 // }
-                createNewUser();
+                // createNewUser();
               },
             ),
           ),
@@ -185,27 +188,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Text(
-                        'Welcome',
-                        style: TextStyle(
-                          fontSize: 42,
-                          color: Colors.white,
-
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+                      WelcomeText(),
                       SizedBox(
                         height: 20,
                       ),
-                      Text(
-                        'Sign-up to get started',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w200,
-                          fontSize: 20.0,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+                      SecondaryTitle(title: "Sign-up to get started" ,),
                       SizedBox(
                         height: 20,
                       ),
@@ -257,29 +244,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       SizedBox(
                         height: 40,
                       ),
-                      RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                            ),
-                            children: [
-                              TextSpan(text: 'Already have an account? '),
-                              TextSpan(
-                                  text: 'Sign In',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.underline,
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      Navigator.pushNamed(
-                                          context, SignInScreen.kSignInScreen);
-                                    }),
-                            ]),
-                      ),
+                      SignInText(),
                     ],
                   ),
                 ),
@@ -307,7 +272,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     disposeFocusNodes();
     disposeControllers();

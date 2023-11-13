@@ -6,9 +6,11 @@ import 'package:thumbing/providers/auth_provider.dart';
 import 'package:thumbing/screens/forgot_password.dart';
 import 'package:thumbing/screens/home_screen.dart';
 import 'package:thumbing/screens/sign_in/google_sign_in_button.dart';
-import 'package:thumbing/screens/sign_up.dart';
+import 'package:thumbing/screens/sign_up/sign_up.dart';
 import 'package:thumbing/utility/constants.dart';
 import 'package:thumbing/widgets/input_form_field.dart';
+import 'package:thumbing/widgets/secondary_title_text.dart';
+import 'package:thumbing/widgets/welcome_text.dart';
 import '../../firebase/firebase_authentication.dart';
 import '../../utility/colors.dart';
 
@@ -60,7 +62,7 @@ class _SignInScreenState extends State<SignInScreen> {
         });
   }
 
- void handleSignInExceptions(String status) {
+  void handleSignInExceptions(String status) {
     switch (status) {
       case 'user-not-found':
         showSnackBar(msg: widget._kUserNotFound, context: context);
@@ -75,8 +77,6 @@ class _SignInScreenState extends State<SignInScreen> {
         showSnackBar(msg: widget._kDefaultError, context: context);
     }
   }
-
-
 
   @override
   void initState() {
@@ -102,128 +102,110 @@ class _SignInScreenState extends State<SignInScreen> {
         final authProvider = ref.read(authRepositoryProvider);
         return SafeArea(
             child: Scaffold(
-              backgroundColor: Colors.white,
-              resizeToAvoidBottomInset: true,
-              floatingActionButton: SizedBox(
-                width: 70,
-                height: 70,
-                child: FittedBox(
-                  child: FloatingActionButton(
-                    child: Icon(Icons.login),
-                    backgroundColor: kLightBlueAccent,
-                    onPressed: () async {
-                      dismissKeyboard();
-                      _showProgressDialog();
-                      String status = await authProvider.signInUser(
-                          email: _emailController.text.toString(),
-                          password: _passwordController.text.toString());
-                      print("Status: ${status}");
-                      handleSignInExceptions(status);
-                    },
-                  ),
+          backgroundColor: Colors.white,
+          resizeToAvoidBottomInset: true,
+          floatingActionButton: SizedBox(
+            width: 70,
+            height: 70,
+            child: FittedBox(
+              child: FloatingActionButton(
+                child: Icon(Icons.login),
+                backgroundColor: kLightBlueAccent,
+                onPressed: () async {
+                  dismissKeyboard();
+                  _showProgressDialog();
+                  String status = await authProvider.signInUser(
+                      email: _emailController.text.toString(),
+                      password: _passwordController.text.toString());
+                  handleSignInExceptions(status);
+                },
+              ),
+            ),
+          ),
+          body: Stack(children: [
+            Container(
+              height: double.infinity,
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: shades,
+                  stops: [0.1, 0.4, 0.7, 0.9],
                 ),
               ),
-              body: Stack(children: [
-                Container(
-                  height: double.infinity,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: shades,
-                      stops: [0.1, 0.4, 0.7, 0.9],
+            ),
+            SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.symmetric(
+                vertical: 120.0,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        WelcomeText(),
+                        SizedBox(
+                          height: 40,
+                        ),
+                        SecondaryTitle(
+                          title: "Log in with your email id to get started",
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        InputFormField(
+                          focusNode: _emailFocusNode,
+                          prefixIcon: Icon(Icons.email,
+                              color: getColorOnFocus(_emailFocusNode)),
+                          onTap: () => _requestFocus(_emailFocusNode),
+                          hintText: 'someone@emaill.com',
+                          controller: _emailController,
+                          obscureText: false,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        InputFormField(
+                          focusNode: _passwordFocusNode,
+                          prefixIcon: Icon(Icons.password,
+                              color: getColorOnFocus(_passwordFocusNode)),
+                          onTap: () => _requestFocus(_passwordFocusNode),
+                          hintText: 'Password',
+                          controller: _passwordController,
+                          obscureText: true,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        _forgotText(context),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        _signInWithText(),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        GoogleSignInButton(),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        _signUpText(),
+                      ],
                     ),
                   ),
-                ),
-                SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 120.0,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text(
-                              'Welcome',
-                              style: TextStyle(
-                                fontSize: 42,
-                                color: Colors.white,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(
-                              height: 40,
-                            ),
-                            _loginInfoText(),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            InputFormField(
-                              focusNode: _emailFocusNode,
-                              prefixIcon: Icon(Icons.email,
-                                  color: getColorOnFocus(_emailFocusNode)),
-                              onTap: () => _requestFocus(_emailFocusNode),
-                              hintText: 'someone@emaill.com',
-                              controller: _emailController,
-                              obscureText: false,
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            InputFormField(
-                              focusNode: _passwordFocusNode,
-                              prefixIcon: Icon(Icons.password,
-                                  color: getColorOnFocus(_passwordFocusNode)),
-                              onTap: () => _requestFocus(_passwordFocusNode),
-                              hintText: 'Password',
-                              controller: _passwordController,
-                              obscureText: true,
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            _forgotText(context),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            _signInWithText(),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            GoogleSignInButton(),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            _signUpText(),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ]),
-            ));
+                ],
+              ),
+            ),
+          ]),
+        ));
       },
-    );
-  }
-
-  Text _loginInfoText() {
-    return Text(
-      'Log in with your email id to get started',
-      style: TextStyle(
-        color: Colors.white,
-        fontWeight: FontWeight.w300,
-        fontSize: 20.0,
-      ),
-      textAlign: TextAlign.center,
     );
   }
 
@@ -238,9 +220,8 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
         textAlign: TextAlign.right,
       ),
-      onTap: () =>
-          Navigator.pushNamed(
-              context, ForgotPasswordScreen.kForgotPasswordScreen),
+      onTap: () => Navigator.pushNamed(
+          context, ForgotPasswordScreen.kForgotPasswordScreen),
     );
   }
 
