@@ -113,7 +113,6 @@ class _SignInScreenState extends State<SignInScreen> {
                 backgroundColor: kLightBlueAccent,
                 onPressed: () async {
                   dismissKeyboard();
-                  _showProgressDialog();
                   String status = await authProvider.signInUser(
                       email: _emailController.text.toString(),
                       password: _passwordController.text.toString());

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:thumbing/firebase/firebase_firestore.dart';
+import 'package:thumbing/providers/player_provider.dart';
 import 'package:thumbing/screens/profile/profile_page.dart';
 import 'package:thumbing/screens/test_settings.dart';
 import 'package:thumbing/utility/constants.dart';
@@ -10,6 +11,7 @@ import 'package:thumbing/widgets/leaderboard.dart';
 import 'package:thumbing/widgets/single_value_card.dart';
 import 'package:thumbing/widgets/value_display_card.dart';
 
+import '../model/player.dart';
 import '../utility/colors.dart';
 
 final userNameProvider = StateProvider<String>((ref) => 'Player');
@@ -28,16 +30,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   final String wpmText = 'WPM';
   final String accText = 'Accuracy';
 
-  _setUserDataToUI() async {
-    await MyCloudFirestore.getUser().then((value) {
-      if (value != null) {
-        ref.read(userNameProvider.notifier).update((state) => value.userName);
-        ref
-            .read(leagueScoreProvider.notifier)
-            .update((state) => value.leagueScore);
-      }
-    });
-  }
 
   _getLatestWPM() async {
     return await CurrentBestScore.getLatestWPM().then((value){
@@ -55,26 +47,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
   }
 
-  getUser() async {
-    return await MyCloudFirestore.getUser();
-  }
+
 
   @override
   void initState() {
     super.initState();
-    _setUserDataToUI();
     _getLatestAcc();
     _getLatestWPM();
   }
 
   @override
   Widget build(BuildContext context) {
-    final userName = ref.watch(userNameProvider);
-    final leagueScore = ref.watch(leagueScoreProvider);
-    final wpm = ref.watch(wpmProvider);
-    final acc = ref.watch(accProvider);
+    final user = ref.watch(playerProvider);
 
-    return SafeArea(
+    return user.when(data: (userData) => SafeArea(
       child: Scaffold(
         appBar: AppBar(
           shape: RoundedRectangleBorder(
@@ -85,7 +71,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           elevation: 5,
           backgroundColor: kLightBlueAccent,
           title: Text(
-            "Hello $userName",
+            "Hello ${userData.userName}",
             style: GoogleFonts.lato(
               color: Colors.white,
               fontSize: 24,
@@ -131,7 +117,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     flex: 1,
                     child: ValueDisplayCard(
                       titleText: wpmText,
-                      valueText: '$wpm',
+                      valueText: '${userData.wpm}',
                       titleTxtStyle: kCardTextStyle.copyWith(
                         fontSize: 20,
                         color: Colors.white,
@@ -149,7 +135,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     flex: 1,
                     child: ValueDisplayCard(
                       titleText: accText,
-                      valueText: '$acc',
+                      valueText: '${userData.acc}',
                       bgColor: Colors.white,
                       titleTxtStyle: kCardTextStyle.copyWith(
                           fontSize: 20, color: Colors.lightBlue),
@@ -164,7 +150,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               SizedBox(
                 height: 15.0,
               ),
-              SingleValueCard('Current League Score', '$leagueScore'),
+              SingleValueCard('Current League Score', '${userData.leagueScore}'),
               SizedBox(
                 height: 15.0,
               ),
@@ -175,6 +161,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ),
       ),
-    );
+    ), error: (error, _) => Center(
+      child: Text(error.toString(), style: const TextStyle(color: Colors.red),),
+    ), loading: () => const Center(
+      child: CircularProgressIndicator(),
+    ));
   }
 }

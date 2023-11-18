@@ -16,7 +16,7 @@ class Player {
       required this.userName, required this.acc, required this.wpm, required this.bestRank});
 
   factory Player.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot,
-      SnapshotOptions options,){
+      SnapshotOptions options){
    final data = snapshot.data();
    return Player(
      uid: data!['$UID'],

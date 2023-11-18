@@ -218,10 +218,10 @@ class _TypingTestScreenState extends State<TypingTestScreen>
   }
 
   _updateBestScore({required int acc, required int wpm}){
-    MyCloudFirestore.updateUserBestScore(acc: acc, wpm: wpm); //Setting best user score on Firestore
-    int leagueScore = acc + wpm;
-    MyCloudFirestore.updateLeagueScoreInUsers(leagueScore: leagueScore);
-    MyCloudFirestore.updateLeagueScoreInLeagueTable(leagueScore: leagueScore, wpm: wpm, acc: acc);
+    // MyCloudFirestore.updateUserBestScore(acc: acc, wpm: wpm); //Setting best user score on Firestore
+    // int leagueScore = acc + wpm;
+    // MyCloudFirestore.updateLeagueScoreInUsers(leagueScore: leagueScore);
+    // MyCloudFirestore.updateLeagueScoreInLeagueTable(leagueScore: leagueScore, wpm: wpm, acc: acc);
   }
 
   _updateLatestScore({required int acc, required int wpm}){

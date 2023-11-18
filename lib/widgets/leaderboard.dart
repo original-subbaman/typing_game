@@ -39,30 +39,30 @@ class _LeaderboardState extends ConsumerState<Leaderboard> {
   }
 
   /*
-  * For each player rank is set has index in which they appear in the array + 1
+  * For each player rank is set has index in which they appear in the array + 1 (+1 because 0 index)
   * */
   _setPlayerRank() {
-    final league = ref.read(leagueProvider);
-    for (var i = 0; i < league.length; i++) {
-      LeaderboardItem item = league[i] as LeaderboardItem;
-      if (MyCloudFirestore.currentUser == item.userName) {
-        MyCloudFirestore.currentRank = i + 1;
-      }
-    }
+    // final league = ref.read(leagueProvider);
+    // for (var i = 0; i < league.length; i++) {
+    //   LeaderboardItem item = league[i] as LeaderboardItem;
+    //   if (MyCloudFirestore.currentUser == item.userName) {
+    //     MyCloudFirestore.currentRank = i + 1;
+    //   }
+    // }
   }
 
   _setLeagueData() async {
-    await MyCloudFirestore.getLeaderboard().then((value) {
-      ref.read(leagueProvider.notifier).update((state) => value);
-      _setPlayerRank();
-    });
+    // await MyCloudFirestore.getLeaderboard().then((value) {
+    //   ref.read(leagueProvider.notifier).update((state) => value);
+    //   _setPlayerRank();
+    // });
   }
 
   refreshLeagueData() async {
-    await MyCloudFirestore.getLeaderboard().then((value) {
-      ref.read(leagueProvider.notifier).update((state) => value);
-      _setPlayerRank();
-    });
+    // await MyCloudFirestore.getLeaderboard().then((value) {
+    //   ref.read(leagueProvider.notifier).update((state) => value);
+    //   _setPlayerRank();
+    // });
   }
 
   @override

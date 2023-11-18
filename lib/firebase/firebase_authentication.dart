@@ -4,13 +4,13 @@ import 'package:thumbing/firebase/auth_exception.dart';
 import 'package:thumbing/utility/constants.dart';
 
 class MyFirebaseAuth {
-  const MyFirebaseAuth(this._auth);
+  MyFirebaseAuth(this._auth);
 
   final FirebaseAuth _auth;
 
   Stream<User?> get authStateChange => _auth.idTokenChanges();
 
-  static String status = "success";
+  String status = "";
   static String? currentUserId = FirebaseAuth.instance.currentUser?.uid;
 
   Future<String> signInWithGoogle() async {
@@ -25,7 +25,7 @@ class MyFirebaseAuth {
     );
 
     try {
-      await FirebaseAuth.instance.signInWithCredential(credential).then(
+      await _auth.signInWithCredential(credential).then(
           (value) => currentUserId = FirebaseAuth.instance.currentUser?.uid);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
@@ -44,7 +44,7 @@ class MyFirebaseAuth {
   Future<String> signInUser(
       {required String email, required String password}) async {
     try {
-      await FirebaseAuth.instance
+      await _auth
           .signInWithEmailAndPassword(email: email, password: password)
           .then((value) =>
               currentUserId = FirebaseAuth.instance.currentUser?.uid);
@@ -56,7 +56,7 @@ class MyFirebaseAuth {
 
   User? isUserLoggedIn() {
     User? loggedInUser;
-    FirebaseAuth.instance.authStateChanges().listen((User user) {
+    _auth.authStateChanges().listen((User user) {
           loggedInUser = user;
         } as void Function(User? event)?);
     return loggedInUser;
@@ -65,7 +65,7 @@ class MyFirebaseAuth {
   Future<String> signUpUser(
       {required String email, required String password}) async {
     try {
-      await FirebaseAuth.instance
+      await _auth
           .createUserWithEmailAndPassword(
             email: email,
             password: password,
@@ -79,10 +79,10 @@ class MyFirebaseAuth {
   }
 
   Future<void> deleteCurrentUser() async {
-    FirebaseAuth.instance.currentUser?.delete();
+    await _auth.currentUser?.delete();
   }
 
   Future<void> signOutUser() async {
-    await FirebaseAuth.instance.signOut();
+    await _auth.signOut();
   }
 }

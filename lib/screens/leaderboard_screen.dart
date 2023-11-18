@@ -45,15 +45,15 @@ class OvalDisplayCard extends StatelessWidget {
 class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
 
   _setUserData() async {
-    await MyCloudFirestore.getUser().then((value) {
-      if(value != null){
-        ref.read(userNameProvider.notifier).update((state) => value.userName);
-        ref.read(wpmProvider.notifier).update((state) => value.wpm);
-        ref.read(accProvider.notifier).update((state) => value.acc);
-        print("best rank: ${value.bestRank}");
-        ref.read(userRankProvider.notifier).update((state) => value.bestRank);
-      }
-    });
+    // await MyCloudFirestore.getUser().then((value) {
+    //   if(value != null){
+    //     ref.read(userNameProvider.notifier).update((state) => value.userName);
+    //     ref.read(wpmProvider.notifier).update((state) => value.wpm);
+    //     ref.read(accProvider.notifier).update((state) => value.acc);
+    //     print("best rank: ${value.bestRank}");
+    //     ref.read(userRankProvider.notifier).update((state) => value.bestRank);
+    //   }
+    // });
   }
 
 
