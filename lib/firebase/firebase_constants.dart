@@ -16,3 +16,4 @@ const WEAK_PASSWORD = "weak-password";
 const EMAIL_ALREADY_IN_USE = "email-already-in-use";
 const INVALID_EMAIL = "invalid-email";
 const SUCCESS = "success";
+

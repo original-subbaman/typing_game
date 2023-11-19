@@ -1,6 +1,4 @@
-import 'dart:ui';
-
-import 'package:flutter/widgets.dart';
+import 'package:thumbing/firebase/firebase_constants.dart';
 
 class LeaderboardItem {
   String userName;
@@ -15,4 +13,18 @@ class LeaderboardItem {
       required this.rank,
       required this.wpm,
       required this.acc});
+
+  factory LeaderboardItem.fromFirestore(Map<String, dynamic> snapshot){
+    return LeaderboardItem(
+      userName: snapshot!['$USER_NAME'],
+      leagueScore: snapshot['$LEAGUE_SCORE'],
+      rank: 0,
+      acc: snapshot['$ACC'],
+      wpm: snapshot['$WPM'],
+    );
+  }
+
+
+
+
 }

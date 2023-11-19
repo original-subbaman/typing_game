@@ -1,15 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:thumbing/firebase/firebase_constants.dart';
 import 'package:thumbing/firebase/firebase_firestore.dart';
 import 'package:thumbing/model/leaderboard_item.dart';
+import 'package:thumbing/providers/firestore_provider.dart';
 import 'package:thumbing/screens/leaderboard_screen.dart';
 import 'package:thumbing/utility/constants.dart';
 
 import '../utility/colors.dart';
 
-
 final leagueProvider = StateProvider((ref) => []);
-class Leaderboard extends ConsumerStatefulWidget{
+
+class Leaderboard extends ConsumerStatefulWidget {
   final bool showExpand;
   final borderRadius;
 
@@ -20,7 +23,6 @@ class Leaderboard extends ConsumerStatefulWidget{
 }
 
 class _LeaderboardState extends ConsumerState<Leaderboard> {
-
   var trailingItemTextStyle = kCardTextStyle.copyWith(
       fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold);
 
@@ -41,22 +43,15 @@ class _LeaderboardState extends ConsumerState<Leaderboard> {
   /*
   * For each player rank is set has index in which they appear in the array + 1 (+1 because 0 index)
   * */
-  _setPlayerRank() {
-    // final league = ref.read(leagueProvider);
-    // for (var i = 0; i < league.length; i++) {
-    //   LeaderboardItem item = league[i] as LeaderboardItem;
-    //   if (MyCloudFirestore.currentUser == item.userName) {
-    //     MyCloudFirestore.currentRank = i + 1;
-    //   }
-    // }
+  _setPlayerRank(List<LeaderboardItem> leaderboard) {
+    int rank = 1;
+    for(var player in leaderboard) {
+      player.rank = rank;
+      rank += 1;
+    }
+    return leaderboard;
   }
 
-  _setLeagueData() async {
-    // await MyCloudFirestore.getLeaderboard().then((value) {
-    //   ref.read(leagueProvider.notifier).update((state) => value);
-    //   _setPlayerRank();
-    // });
-  }
 
   refreshLeagueData() async {
     // await MyCloudFirestore.getLeaderboard().then((value) {
@@ -67,15 +62,16 @@ class _LeaderboardState extends ConsumerState<Leaderboard> {
 
   @override
   void initState() {
-    _setLeagueData();
-    _setPlayerRank();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final leagueData = ref.watch(leagueProvider);
-
+    final leagueData = ref.watch(leaderboardProvider);
+    leagueData.when(
+        data: (data) => print("data is: $data"),
+        error: (error, _) => print(error),
+        loading: () => print("loading..."));
     return Material(
       elevation: 10.0,
       color: kLightBlueAccent,
@@ -128,29 +124,40 @@ class _LeaderboardState extends ConsumerState<Leaderboard> {
                 ],
               ),
               Expanded(
-                child: ListView.builder(
-                  itemCount: leagueData.length,
-                  physics: BouncingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics()),
-                  itemBuilder: (_, index) {
-                    var user = leagueData[index];
-                    return ListTile(
-                      leading: TrailingText(user.rank, trailingItemTextStyle),
-                      title: Text(
-                        user.userName,
-                        style: kCardTextStyle,
-                      ),
-                      trailing: Wrap(
-                        children: <Widget>[
-                          TrailingText("${user.wpm} w/m", trailingItemTextStyle),
-                          TrailingText("${user.acc} %", trailingItemTextStyle),
-                        ],
-                        spacing: 20.0,
-                      ),
-                    );
-                  },
-                ),
-              )
+                child: leagueData.when(
+                    data: (data) {
+                      final leaderboard = _setPlayerRank(data);
+                      return ListView.builder(
+                        itemCount: leaderboard.length,
+                        physics: BouncingScrollPhysics(
+                            parent: AlwaysScrollableScrollPhysics()),
+                        itemBuilder: (_, index) {
+                          var user = leaderboard[index];
+                          return ListTile(
+                            leading:
+                                TrailingText(user.rank, trailingItemTextStyle),
+                            title: Text(
+                              user.userName,
+                              style: kCardTextStyle,
+                            ),
+                            trailing: Wrap(
+                              children: <Widget>[
+                                TrailingText(
+                                    "${user.wpm} w/m", trailingItemTextStyle),
+                                TrailingText(
+                                    "${user.acc} %", trailingItemTextStyle),
+                              ],
+                              spacing: 20.0,
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    error: (error, _) => Center(
+                          child: Text("Error: $error"),
+                        ),
+                    loading: () => CircularProgressIndicator()),
+              ),
             ],
           ),
         ),
