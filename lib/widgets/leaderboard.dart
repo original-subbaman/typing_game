@@ -53,12 +53,6 @@ class _LeaderboardState extends ConsumerState<Leaderboard> {
   }
 
 
-  refreshLeagueData() async {
-    // await MyCloudFirestore.getLeaderboard().then((value) {
-    //   ref.read(leagueProvider.notifier).update((state) => value);
-    //   _setPlayerRank();
-    // });
-  }
 
   @override
   void initState() {
@@ -98,13 +92,6 @@ class _LeaderboardState extends ConsumerState<Leaderboard> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      IconButton(
-                        onPressed: () {
-                          refreshLeagueData();
-                        },
-                        icon: Icon(Icons.refresh, size: 25),
-                        color: Colors.white,
-                      ),
                       Visibility(
                         visible: widget.showExpand,
                         child: IconButton(

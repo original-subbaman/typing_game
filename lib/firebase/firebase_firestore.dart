@@ -7,7 +7,6 @@ import 'package:thumbing/model/player.dart';
 import '../model/league.dart';
 
 class MyCloudFirestore {
-
   FirebaseFirestore _firestore;
 
   MyCloudFirestore(this._firestore);
@@ -16,21 +15,20 @@ class MyCloudFirestore {
   int? currentRank;
 
   Future<String?> createNewPlayer(uid, newPlayer) async {
-    final userRef = getUserDocumentReference(
-        uid: uid);
-
+    final userRef = getUserDocumentReference(uid: uid);
+    var status;
     userRef
         .set(newPlayer)
-    /*.onError(
-            (error, stackTrace) => //showCreateUserException(error as String))*/
-        .then((value) {
-      addNewUserToLeague(newPlayer: newPlayer);
-      //TODO: Navigate to Wrapper Page
+        .then((value) => addNewUserToLeague(newPlayer: newPlayer))
+        .onError((error, stackTrace) {
+      status = error;
     });
+    return status;
   }
 
   Future<String?> getCurrentUserName() async {
-    await _firestore.collection(kUserCollection)
+    await _firestore
+        .collection(kUserCollection)
         .doc(MyFirebaseAuth.currentUserId)
         .get()
         .then((DocumentSnapshot snapshot) {
@@ -47,28 +45,30 @@ class MyCloudFirestore {
   }
 
   DocumentReference<Player> getUserDocumentReference({required String? uid}) {
-    return _firestore.collection(kUserCollection)
+    return _firestore
+        .collection(kUserCollection)
         .withConverter(
-        fromFirestore: (snapshot, options) =>
-            Player.fromFirestore(snapshot, options!),
-        toFirestore: (Player player, options) => player.toFirestore())
+            fromFirestore: (snapshot, options) =>
+                Player.fromFirestore(snapshot, options!),
+            toFirestore: (Player player, options) => player.toFirestore())
         .doc(uid);
   }
 
   void addLeague({required League league}) async {
     final leagueRef =
-    _firestore.collection(kLeagueCollection).withConverter<League>(
-      fromFirestore: (snapshot, _) => League.fromJson(snapshot.data()!),
-      toFirestore: (movie, _) => movie.toJson(),
-    );
+        _firestore.collection(kLeagueCollection).withConverter<League>(
+              fromFirestore: (snapshot, _) => League.fromJson(snapshot.data()!),
+              toFirestore: (movie, _) => movie.toJson(),
+            );
     await leagueRef.add(
       league,
     );
   }
 
   getBestScore() async {
-    final user = _firestore.collection(kUserCollection).doc(
-        MyFirebaseAuth.currentUserId);
+    final user = _firestore
+        .collection(kUserCollection)
+        .doc(MyFirebaseAuth.currentUserId);
     final score = [0, 0]; //0 index = accuracy, 1 index = wpm
     await user.get().then((snapshot) {
       if (snapshot.exists) {
@@ -81,8 +81,9 @@ class MyCloudFirestore {
   }
 
   updateUserBestScore({required int acc, required int wpm}) async {
-    final user = _firestore.collection(kUserCollection).doc(
-        MyFirebaseAuth.currentUserId);
+    final user = _firestore
+        .collection(kUserCollection)
+        .doc(MyFirebaseAuth.currentUserId);
     final bestScore = await getBestScore();
 
     if (acc > bestScore[0]) {
@@ -91,14 +92,14 @@ class MyCloudFirestore {
           ACC: acc,
           WPM: wpm,
         }).then(
-              (value) => print("User best score updated!"),
+          (value) => print("User best score updated!"),
           onError: (e) => print("Error updating score! ${e.toString()}"),
         );
       } else {
         user.update({
           ACC: acc,
         }).then(
-              (value) => print("User best accuracy updated"),
+          (value) => print("User best accuracy updated"),
           onError: (e) => print("Error updating acc"),
         );
       }
@@ -106,21 +107,22 @@ class MyCloudFirestore {
       user.update({
         WPM: wpm,
       }).then(
-            (value) => print("User best wpm updated"),
+        (value) => print("User best wpm updated"),
         onError: (e) => print("Error updating wpm"),
       );
     }
   }
 
   updateLeagueScoreInUsers({required int leagueScore}) async {
-    final user = _firestore.collection(kUserCollection).doc(
-        MyFirebaseAuth.currentUserId);
+    final user = _firestore
+        .collection(kUserCollection)
+        .doc(MyFirebaseAuth.currentUserId);
     await user.get().then((snapshot) {
       if (snapshot.exists) {
         final Map data = snapshot.data() as Map;
         if (leagueScore > data['league_score']) {
           user.update({"league_score": leagueScore}).then(
-                (value) => print("User league score updated"),
+            (value) => print("User league score updated"),
             onError: (e) => print("Error updating league score"),
           );
         }
@@ -130,8 +132,9 @@ class MyCloudFirestore {
 
   updateLeagueScoreInLeagueTable(
       {required int leagueScore, required int acc, required int wpm}) async {
-    final league = _firestore.collection(kLeagueCollection).doc(
-        MyFirebaseAuth.currentUserId);
+    final league = _firestore
+        .collection(kLeagueCollection)
+        .doc(MyFirebaseAuth.currentUserId);
     await league.get().then((snapshot) {
       if (snapshot.exists) {
         final Map data = snapshot.data() as Map;
@@ -140,8 +143,7 @@ class MyCloudFirestore {
             "league_score": leagueScore,
             "acc": acc,
             "wpm": wpm,
-          }).then(
-                  (value) => print("User league score updated in league table"),
+          }).then((value) => print("User league score updated in league table"),
               onError: (e) =>
                   print("Error updating league score in league table"));
         }
@@ -157,7 +159,8 @@ class MyCloudFirestore {
       'wpm': 0,
       'best_rank': newPlayer.bestRank,
     };
-    await _firestore.collection(kLeagueCollection)
+    await _firestore
+        .collection(kLeagueCollection)
         .doc(newPlayer.uid)
         .set(player)
         .then((value) => print("Successfully added user to league"));
@@ -167,8 +170,9 @@ class MyCloudFirestore {
     return _firestore
         .collection(kLeagueCollection)
         .orderBy("league_score", descending: true)
-        .snapshots().map((snapshot) =>
-        snapshot.docs.map((doc) => LeaderboardItem.fromFirestore(doc.data()))
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => LeaderboardItem.fromFirestore(doc.data()))
             .toList());
   }
 
